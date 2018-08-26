@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC STARTING
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$(ynh_app_setting_get $app domain)
+
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# STOP AND REMOVE SERVICE
+#=================================================
+
+ynh_remove_systemd_config
+
+#=================================================
+# DISABLE SERVICE IN ADMIN PANEL
+#=================================================
+
+if yunohost service status | grep -q $app	# Test l'existence du service dans Yunohost
+then
+	ynh_print_info "Remove $app service" >&2
+	yunohost service remove $app
+fi
+
+#=================================================
+# REMOVE DEPENDENCIES
+#=================================================
+
+ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE THE MAIN DIR OF THE APP
+#=================================================
+
+ynh_secure_remove "/var/www/$app"	# Suppression du dossier de l'application
+
+#=================================================
+# REMOVE THE NGINX CONFIGURATION
+#=================================================
+
+ynh_remove_nginx_config	# Suppression de la configuration nginx
+
+#=================================================
+# REMOVE THE LOGROTATE CONFIG
+#=================================================
+
+ynh_remove_logrotate	# Suppression de la configuration de logrotate
+
+#=================================================
+# CLOSE A PORT
+#=================================================
+
+if yunohost firewall list | grep -q "\- 4242$"
+then
+	ynh_print_info "Close port 4242" >&2
+	ynh_exec_quiet yunohost firewall disallow TCP 4242
+fi
+
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
+# REMOVE PYTHONZ
+#=================================================
+
+ynh_secure_remove "$HOME/.pythonz"
+
+# Suppression des log
+ynh_secure_remove "/var/log/$app"
+
+#=================================================
+# GENERIC FINALISATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+
+ynh_system_user_delete $app

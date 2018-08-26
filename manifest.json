@@ -1,0 +1,46 @@
+{
+	"name": "YunoRunner",
+	"id": "yunorunner",
+	"packaging_format": 1,
+	"description": {
+		"en": "Description",
+		"fr": "Description"
+	},
+	"version": "1.0~ynh1",
+	"url": "https://github.com/YunoHost/yunorunner",
+	"license": "free",
+	"maintainer": {
+		"name": "Maniack Crudelis",
+		"email": "maniackc_dev@crudelis.fr"
+	},
+	"requirements": {
+		"yunohost": ">= 3.1.0"
+	},
+	"multi_instance": true,
+	"services": [
+		"nginx"
+	],
+	"arguments": {
+		"install" : [
+			{
+				"name": "domain",
+				"type": "domain",
+				"ask": {
+					"en": "Choose a domain for YunoRunner",
+					"fr": "Choisissez un domaine pour YunoRunner"
+				},
+				"example": "domain.org"
+			},
+			{
+				"name": "path",
+				"type": "path",
+				"ask": {
+					"en": "Choose a path for YunoRunner",
+					"fr": "Choisissez un chemin pour YunoRunner"
+				},
+				"example": "/yunorunner",
+				"default": "/yunorunner"
+			}
+		]
+	}
+}

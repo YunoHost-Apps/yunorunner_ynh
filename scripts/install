@@ -1,0 +1,155 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC STARTING
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE FAILURE OF THE SCRIPT
+#=================================================
+
+# ynh_clean_setup () {
+# Nettoyage des résidus d'installation non pris en charge par le script remove.
+# Pas de nettoyage supplémentaire nécessaire ici...
+# 	echo ""
+# }
+ynh_abort_if_errors	# Active trap pour arrêter le script si une erreur est détectée.
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+
+domain=$YNH_APP_ARG_DOMAIN
+path_url=$YNH_APP_ARG_PATH
+
+app=$YNH_APP_INSTANCE_NAME
+
+#=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
+
+final_path=/var/www/$app
+test ! -e "$final_path" || ynh_die "This path already contains a folder"
+
+# Normalize the url path syntax
+path_url=$(ynh_normalize_url_path $path_url)
+
+# Check web path availability
+ynh_webpath_available $domain $path_url
+# Register (book) web path
+ynh_webpath_register $app $domain $path_url
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+
+ynh_app_setting_set $app domain $domain
+ynh_app_setting_set $app path $path_url
+
+#=================================================
+# STANDARD MODIFICATIONS
+#=================================================
+# FIND AND OPEN A PORT
+#=================================================
+
+# Ouvre le port 4242 dans le firewall
+ynh_exec_fully_quiet yunohost firewall allow --no-upnp TCP 4242
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+
+ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+ynh_app_setting_set $app final_path $final_path
+ynh_setup_source "$final_path"	# Télécharge la source, décompresse et copie dans $final_path
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+ynh_add_nginx_config
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+
+ynh_system_user_create $app	# Créer un utilisateur système dédié à l'app
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# INSTALL PYTHONZ TO GET PYTHON 3.6
+#=================================================
+
+# Get pythonz
+# curl -kL https://raw.githubusercontent.com/saghul/pythonz/master/pythonz-install
+# ./pythonz-install
+ynh_setup_source "$HOME/.pythonz" pythonz
+# Then install it
+python $HOME/.pythonz/pythonz_install.py
+
+# if ! grep --quiet "YunoRunner" /root/.bashrc
+# then
+#     [[ -s $HOME/.pythonz/etc/bashrc ]] && source $HOME/.pythonz/etc/bashrc # Added by YunoRunner
+# fi
+
+# Install Python 3.6.6
+$HOME/.pythonz/bin/pythonz install 3.6.6
+
+#=================================================
+# INSTALL YUNORUNNER DEPENDENCIES
+#=================================================
+
+( cd $final_path
+virtualenv -p $($HOME/.pythonz/bin/pythonz locate 3.6.6) ve3
+ve3/bin/pip3 install -r requirements.txt )
+
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+
+ynh_add_systemd_config
+
+#=================================================
+# GENERIC FINALISATION
+#=================================================
+# SECURING FILES AND DIRECTORIES
+#=================================================
+
+# Les fichiers appartiennent à root
+chown -R root: $final_path
+
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+
+ynh_use_logrotate
+
+#=================================================
+# ENABLE SERVICE IN ADMIN PANEL
+#=================================================
+
+yunohost service add NAME_INIT.D --log "/var/log/$app/$app.log"
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+
+# Make app public
+ynh_app_setting_set $app skipped_uris "/"
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+
+ynh_system_reload --service_name=nginx

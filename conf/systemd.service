@@ -1,0 +1,13 @@
+[Unit]
+Description=YunoRunner CI
+After=network.target
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=__FINALPATH__
+ExecStart=__FINALPATH__/ve3/bin/python ./run.py __PCHECK_PATH__/analyseCI.sh >> /var/log/__APP__/__APP__.log 2&>1
+
+[Install]
+WantedBy=multi-user.target
