@@ -8,8 +8,6 @@
 
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
-# Load common variables for all scripts.
-source ../settings/scripts/_variables
 
 #=================================================
 # MANAGE SCRIPT FAILURE
@@ -27,7 +25,6 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get $app domain)
 path_url=$(ynh_app_setting_get $app path)
 final_path=$(ynh_app_setting_get $app final_path)
-db_name=$(ynh_app_setting_get $app db_name)
 
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
@@ -59,14 +56,6 @@ ynh_restore_file "/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_restore_file "$final_path"
 
 #=================================================
-# RESTORE OF THE SQL BDD
-#=================================================
-
-db_pwd=$(ynh_app_setting_get $app mysqlpwd)
-ynh_mysql_setup_db $db_name $db_name $db_pwd
-ynh_mysql_connect_as $db_name $db_pwd $db_name < ./db.sql
-
-#=================================================
 # RECREATE OF THE DEDICATED USER
 #=================================================
 
@@ -80,27 +69,12 @@ ynh_system_user_create $app	# Recreate the dedicated user, if not exist
 chown -R root: $final_path
 
 #=================================================
-# RESTORE OF THE PHP-FPM CONFIGURATION
-#=================================================
-
-ynh_restore_file "/etc/php5/fpm/pool.d/$app.conf"
-ynh_restore_file "/etc/php5/fpm/conf.d/20-$app.ini"
-
-#=================================================
-# RESTORE FAIL2BAN CONFIGURATION
-#=================================================
-
-ynh_restore_file "/etc/fail2ban/jail.d/$app.conf"
-ynh_restore_file "/etc/fail2ban/filter.d/$app.conf"
-ynh_system_reload --service_name=fail2ban --action=restart
-
-#=================================================
 # SPECIFIC RESTORE
 #=================================================
 # REINSTALL DEPENDENCIES
 #=================================================
 
-ynh_install_app_dependencies $app_depencencies
+ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
 
 #=================================================
 # ENABLE SERVICE IN ADMIN PANEL
@@ -117,10 +91,10 @@ ynh_restore_file "/etc/systemd/system/$app.service"
 systemctl enable $app.service
 
 #=================================================
-# RESTORE OF THE CRON FILE
+# RESTORE OF PYTHONZ
 #=================================================
 
-ynh_restore_file "/etc/cron.d/$app"
+ynh_restore_file "$HOME/.pythonz"
 
 #=================================================
 # BACKUP OF THE LOGROTATE CONFIGURATION
@@ -131,22 +105,19 @@ ynh_restore_file "/etc/logrotate.d/$app"
 #=================================================
 # GENERIC FINALISATION
 #=================================================
-# RELOAD NGINX AND PHP-FPM
+# RELOAD NGINX
 #=================================================
 
-ynh_system_reload --service_name=php5-fpm
 ynh_system_reload --service_name=nginx
+
+#=================================================
+# START YUNORUNNER
+#=================================================
+
+ynh_system_reload --service_name=yunorunner --action=start
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
 #=================================================
 
 ynh_maintenance_mode_OFF
-
-#=================================================
-# SEND A README FOR THE ADMIN
-#=================================================
-
-message="If you facing an issue or want to improve this app, please open a new issue in this project: https://github.com/YunoHost-Apps/modele_ynh"
-
-ynh_send_readme_to_admin --app_message="$message" --recipients="$admin root"

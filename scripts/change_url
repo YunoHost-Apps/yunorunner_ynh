@@ -36,10 +36,6 @@ test -n "$new_path" || new_path="/"
 new_path=$(ynh_normalize_url_path $new_path)
 old_path=$(ynh_normalize_url_path $old_path)
 
-echo "old_path=$old_path" >&2	## DEBUG
-echo "new_path=$new_path" >&2	## DEBUG
-echo "-" >&2	## DEBUG
-
 #=================================================
 # ACTIVATE MAINTENANCE MODE
 #=================================================
@@ -108,25 +104,10 @@ then
 fi
 
 #=================================================
-# UPDATE SSOWAT
-#=================================================
-
-sudo cat "/etc/yunohost/apps/$app/settings.yml" >&2	## DEBUG
-echo "-" >&2	## DEBUG
-
-#=================================================
-# SPECIFIC MODIFICATIONS
-#=================================================
-# ...
-#=================================================
-
-#=================================================
 # GENERIC FINALISATION
 #=================================================
 # RELOAD NGINX
 #=================================================
-
-cat "$nginx_conf_path" >&2	## DEBUG
 
 ynh_system_reload --service_name=nginx
 

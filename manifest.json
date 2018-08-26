@@ -3,8 +3,7 @@
 	"id": "yunorunner",
 	"packaging_format": 1,
 	"description": {
-		"en": "Description",
-		"fr": "Description"
+		"en": "CI runner for YunoHost"
 	},
 	"version": "1.0~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
@@ -16,7 +15,7 @@
 	"requirements": {
 		"yunohost": ">= 3.1.0"
 	},
-	"multi_instance": true,
+	"multi_instance": false,
 	"services": [
 		"nginx"
 	],

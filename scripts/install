@@ -153,3 +153,9 @@ ynh_app_setting_set $app skipped_uris "/"
 #=================================================
 
 ynh_system_reload --service_name=nginx
+
+#=================================================
+# START YUNORUNNER
+#=================================================
+
+ynh_system_reload --service_name=yunorunner --action=start

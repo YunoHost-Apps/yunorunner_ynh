@@ -8,8 +8,6 @@
 
 source _common.sh
 source /usr/share/yunohost/helpers
-# Load common variables for all scripts.
-source _variables
 
 #=================================================
 # LOAD SETTINGS
@@ -19,11 +17,7 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get $app domain)
 path_url=$(ynh_app_setting_get $app path)
-admin=$(ynh_app_setting_get $app admin)
-is_public=$(ynh_app_setting_get $app is_public)
 final_path=$(ynh_app_setting_get $app final_path)
-port=$(ynh_app_setting_get $app port)
-db_name=$(ynh_app_setting_get $app db_name)
 
 #=================================================
 # CHECK VERSION
@@ -34,19 +28,6 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-
-if [ "$is_public" = "Yes" ]; then
-	ynh_app_setting_set $app is_public 1	# Fixe is_public en booléen
-	is_public=1
-elif [ "$is_public" = "No" ]; then
-	ynh_app_setting_set $app is_public 0
-	is_public=0
-fi
-
-if [ -z $db_name ]; then	# Si db_name n'est pas renseigné dans app setting
-	db_name=$(ynh_sanitize_dbid $app)
-	ynh_app_setting_set $app db_name $db_name
-fi
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
@@ -85,6 +66,12 @@ then
 fi
 
 #=================================================
+# UPGRADE DEPENDENCIES
+#=================================================
+
+ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
+
+#=================================================
 # NGINX CONFIGURATION
 #=================================================
 
@@ -97,21 +84,7 @@ ynh_add_nginx_config
 ynh_system_user_create $app	# Create the dedicated user, if not exist
 
 #=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-
-ynh_add_fpm_config	# Créer le fichier de configuration du pool php-fpm et le configure.
-
-#=================================================
 # SPECIFIC UPGRADE
-#=================================================
-# ...
-#=================================================
-
-# Copie ou modification d'un fichier de config
-ynh_backup_if_checksum_is_different "$final_path/CONFIG_FILE"	# Créé un backup du fichier de config si il a été modifié.
-ynh_store_file_checksum "$final_path/CONFIG_FILE"	# Réenregistre la somme de contrôle du fichier de config
-
 #=================================================
 # SETUP LOGROTATE
 #=================================================
@@ -127,11 +100,6 @@ ynh_add_systemd_config
 #=================================================
 # GENERIC FINALISATION
 #=================================================
-# UPGRADE FAIL2BAN
-#=================================================
-
-ynh_add_fail2ban_config "/var/log/nginx/${domain}-error.log" "PHP message: Leed: wrong login for .* client: <HOST>" 5
-
 #=================================================
 # SECURING FILES AND DIRECTORIES
 #=================================================
@@ -143,21 +111,21 @@ chown -R root: $final_path
 # SETUP SSOWAT
 #=================================================
 
-if [ $is_public -eq 0 ]
-then	# Retire l'accès public
-	ynh_app_setting_delete $app skipped_uris
-fi
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	ynh_app_setting_set $app skipped_uris "/"
-fi
+# Make app public
+ynh_app_setting_set $app skipped_uris "/"
 
 #=================================================
 # RELOAD NGINX
 #=================================================
 
 ynh_system_reload --service_name=nginx
+
+#=================================================
+# RESTART YUNORUNNER
+#=================================================
+
+ynh_system_reload --service_name=yunorunner --action=restart
+
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
