@@ -64,7 +64,7 @@ ynh_exec_fully_quiet yunohost firewall allow --no-upnp TCP 4242
 # INSTALL DEPENDENCIES
 #=================================================
 
-ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
+ynh_install_app_dependencies python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
