@@ -53,8 +53,3 @@ ynh_backup "/etc/logrotate.d/$app"
 
 ynh_backup "/etc/systemd/system/$app.service"
 
-#=================================================
-# BACKUP OF PYTHONZ
-#=================================================
-
-ynh_backup "$HOME/.pythonz"

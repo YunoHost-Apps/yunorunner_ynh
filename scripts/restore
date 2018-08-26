@@ -91,12 +91,6 @@ ynh_restore_file "/etc/systemd/system/$app.service"
 systemctl enable $app.service
 
 #=================================================
-# RESTORE OF PYTHONZ
-#=================================================
-
-ynh_restore_file "$HOME/.pythonz"
-
-#=================================================
 # BACKUP OF THE LOGROTATE CONFIGURATION
 #=================================================
 

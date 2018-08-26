@@ -94,24 +94,24 @@ ynh_system_user_create $app	# Créer un utilisateur système dédié à l'app
 # Get pythonz
 # curl -kL https://raw.githubusercontent.com/saghul/pythonz/master/pythonz-install
 # ./pythonz-install
-ynh_setup_source "$HOME/.pythonz" pythonz
+ynh_setup_source "$final_path/.pythonz" pythonz
 # Then install it
-python $HOME/.pythonz/pythonz_install.py
+python $final_path/.pythonz/pythonz_install.py
 
 # if ! grep --quiet "YunoRunner" /root/.bashrc
 # then
-#     [[ -s $HOME/.pythonz/etc/bashrc ]] && source $HOME/.pythonz/etc/bashrc # Added by YunoRunner
+#     [[ -s $final_path/.pythonz/etc/bashrc ]] && source $final_path/.pythonz/etc/bashrc # Added by YunoRunner
 # fi
 
 # Install Python 3.6.6
-$HOME/.pythonz/bin/pythonz install 3.6.6
+$final_path/.pythonz/bin/pythonz install 3.6.6
 
 #=================================================
 # INSTALL YUNORUNNER DEPENDENCIES
 #=================================================
 
 ( cd $final_path
-virtualenv -p $($HOME/.pythonz/bin/pythonz locate 3.6.6) ve3
+virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
 ve3/bin/pip3 install -r requirements.txt )
 
 #=================================================

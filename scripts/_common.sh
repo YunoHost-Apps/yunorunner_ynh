@@ -197,6 +197,108 @@ ynh_handle_getopts_args () {
 
 #=================================================
 
+ynh_print_log () {
+  echo "${1}"
+}
+
+# Print an info on stdout
+#
+# usage: ynh_print_info "Text to print"
+# | arg: text - The text to print
+ynh_print_info () {
+  ynh_print_log "[INFO] ${1}"
+}
+
+# Print a warning on stderr
+#
+# usage: ynh_print_warn "Text to print"
+# | arg: text - The text to print
+ynh_print_warn () {
+  ynh_print_log "[WARN] ${1}" >&2
+}
+
+# Print a error on stderr
+#
+# usage: ynh_print_err "Text to print"
+# | arg: text - The text to print
+ynh_print_err () {
+  ynh_print_log "[ERR] ${1}" >&2
+}
+
+# Execute a command and print the result as an error
+#
+# usage: ynh_exec_err command to execute
+# usage: ynh_exec_err "command to execute | following command"
+# In case of use of pipes, you have to use double quotes. Otherwise, this helper will be executed with the first command, then be send to the next pipe.
+#
+# | arg: command - command to execute
+ynh_exec_err () {
+	ynh_print_err "$(eval $@)"
+}
+
+# Execute a command and print the result as a warning
+#
+# usage: ynh_exec_warn command to execute
+# usage: ynh_exec_warn "command to execute | following command"
+# In case of use of pipes, you have to use double quotes. Otherwise, this helper will be executed with the first command, then be send to the next pipe.
+#
+# | arg: command - command to execute
+ynh_exec_warn () {
+	ynh_print_warn "$(eval $@)"
+}
+
+# Execute a command and force the result to be printed on stdout
+#
+# usage: ynh_exec_warn_less command to execute
+# usage: ynh_exec_warn_less "command to execute | following command"
+# In case of use of pipes, you have to use double quotes. Otherwise, this helper will be executed with the first command, then be send to the next pipe.
+#
+# | arg: command - command to execute
+ynh_exec_warn_less () {
+	eval $@ 2>&1
+}
+
+# Execute a command and redirect stdout in /dev/null
+#
+# usage: ynh_exec_quiet command to execute
+# usage: ynh_exec_quiet "command to execute | following command"
+# In case of use of pipes, you have to use double quotes. Otherwise, this helper will be executed with the first command, then be send to the next pipe.
+#
+# | arg: command - command to execute
+ynh_exec_quiet () {
+	eval $@ > /dev/null
+}
+
+# Execute a command and redirect stdout and stderr in /dev/null
+#
+# usage: ynh_exec_fully_quiet command to execute
+# usage: ynh_exec_fully_quiet "command to execute | following command"
+# In case of use of pipes, you have to use double quotes. Otherwise, this helper will be executed with the first command, then be send to the next pipe.
+#
+# | arg: command - command to execute
+ynh_exec_fully_quiet () {
+	eval $@ > /dev/null 2>&1
+}
+
+# Remove any logs for all the following commands.
+#
+# usage: ynh_print_OFF
+# WARNING: You should be careful with this helper, and never forgot to use ynh_print_ON as soon as possible to restore the logging.
+ynh_print_OFF () {
+	set +x
+}
+
+# Restore the logging after ynh_print_OFF
+#
+# usage: ynh_print_ON
+ynh_print_ON () {
+	set -x
+	# Print an echo only for the log, to be able to know that ynh_print_ON has been called.
+	echo ynh_print_ON > /dev/null
+}
+
+#=================================================
+
 # Read the value of a key in a ynh manifest file
 #
 # usage: ynh_read_manifest manifest key

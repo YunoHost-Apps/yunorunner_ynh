@@ -72,10 +72,6 @@ fi
 #=================================================
 # SPECIFIC REMOVE
 #=================================================
-# REMOVE PYTHONZ
-#=================================================
-
-ynh_secure_remove "$HOME/.pythonz"
 
 # Suppression des log
 ynh_secure_remove "/var/log/$app"
