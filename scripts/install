@@ -95,6 +95,7 @@ ynh_system_user_create $app	# Créer un utilisateur système dédié à l'app
 # curl -kL https://raw.githubusercontent.com/saghul/pythonz/master/pythonz-install
 # ./pythonz-install
 ynh_setup_source "$final_path/.pythonz" pythonz
+export PYTHONZ_ROOT="$final_path/.pythonz"
 # Then install it
 python $final_path/.pythonz/pythonz_install.py
 
