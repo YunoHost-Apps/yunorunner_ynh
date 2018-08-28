@@ -127,20 +127,13 @@ ynh_add_systemd_config
 # SECURING FILES AND DIRECTORIES
 #=================================================
 
-# Les fichiers appartiennent à root
-chown -R root: $final_path
-
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-
-ynh_use_logrotate
+chown -R $app:root $final_path
 
 #=================================================
 # ENABLE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add NAME_INIT.D --log "/var/log/$app/$app.log"
+yunohost service add $app.service
 
 #=================================================
 # SETUP SSOWAT

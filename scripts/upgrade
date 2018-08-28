@@ -86,12 +86,6 @@ ynh_system_user_create $app	# Create the dedicated user, if not exist
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-
-ynh_use_logrotate --non-append
-
-#=================================================
 # SETUP SYSTEMD
 #=================================================
 
@@ -104,8 +98,7 @@ ynh_add_systemd_config
 # SECURING FILES AND DIRECTORIES
 #=================================================
 
-# Les fichiers appartiennent à root
-chown -R root: $final_path
+chown -R $app:root $final_path
 
 #=================================================
 # SETUP SSOWAT

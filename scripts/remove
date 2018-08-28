@@ -32,7 +32,7 @@ ynh_remove_systemd_config
 if yunohost service status | grep -q $app	# Test l'existence du service dans Yunohost
 then
 	ynh_print_info "Remove $app service" >&2
-	yunohost service remove $app
+	yunohost service remove $app.service
 fi
 
 #=================================================
@@ -54,12 +54,6 @@ ynh_secure_remove "/var/www/$app"	# Suppression du dossier de l'application
 ynh_remove_nginx_config	# Suppression de la configuration nginx
 
 #=================================================
-# REMOVE THE LOGROTATE CONFIG
-#=================================================
-
-ynh_remove_logrotate	# Suppression de la configuration de logrotate
-
-#=================================================
 # CLOSE A PORT
 #=================================================
 
@@ -68,13 +62,6 @@ then
 	ynh_print_info "Close port 4242" >&2
 	ynh_exec_quiet yunohost firewall disallow TCP 4242
 fi
-
-#=================================================
-# SPECIFIC REMOVE
-#=================================================
-
-# Suppression des log
-ynh_secure_remove "/var/log/$app"
 
 #=================================================
 # GENERIC FINALISATION

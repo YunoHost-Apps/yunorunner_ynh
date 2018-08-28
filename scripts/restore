@@ -65,8 +65,7 @@ ynh_system_user_create $app	# Recreate the dedicated user, if not exist
 # RESTORE USER RIGHTS
 #=================================================
 
-# Les fichiers appartiennent à root
-chown -R root: $final_path
+chown -R $app:root $final_path
 
 #=================================================
 # SPECIFIC RESTORE
@@ -80,7 +79,7 @@ ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
 # ENABLE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add $app --log "/var/log/$app/APP.log"
+yunohost service add $app.service
 
 #=================================================
 # RESTORE SYSTEMD
@@ -89,12 +88,6 @@ yunohost service add $app --log "/var/log/$app/APP.log"
 ynh_restore_file "/etc/systemd/system/$app.service"
 ## Démarrage auto du service
 systemctl enable $app.service
-
-#=================================================
-# BACKUP OF THE LOGROTATE CONFIGURATION
-#=================================================
-
-ynh_restore_file "/etc/logrotate.d/$app"
 
 #=================================================
 # GENERIC FINALISATION
