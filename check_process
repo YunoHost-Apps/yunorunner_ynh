@@ -1,6 +1,6 @@
 ;; Test complet
 	; pre-install
-		git clone https://github.com/YunoHost/CI_package_check /home/CI_package_check
+		sudo git clone https://github.com/YunoHost/CI_package_check /home/CI_package_check
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
 		path="/path"	(PATH)
