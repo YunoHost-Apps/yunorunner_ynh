@@ -57,8 +57,10 @@ ynh_app_setting_set $app path $path_url
 # FIND AND OPEN A PORT
 #=================================================
 
-# Ouvre le port 4242 dans le firewall
-ynh_exec_fully_quiet yunohost firewall allow --no-upnp TCP 4242
+port=$(ynh_find_port 4242)
+# Ouvre le port dans le firewall
+ynh_exec_fully_quiet yunohost firewall allow --no-upnp TCP $port
+ynh_app_setting_set $app port $port
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -122,6 +124,13 @@ ve3/bin/pip3 install -r requirements.txt )
 ynh_add_systemd_config
 
 #=================================================
+# CHANGE PORT IN YUNORUNNER
+#=================================================
+
+ynh_replace_string "localhost:4242" "localhost:$port" "$final_path/ciclic"
+ynh_replace_string "port=4242" "port=$port" "$final_path/run.py"
+
+#=================================================
 # GENERIC FINALISATION
 #=================================================
 # SECURING FILES AND DIRECTORIES
@@ -152,4 +161,4 @@ ynh_system_reload --service_name=nginx
 # START YUNORUNNER
 #=================================================
 
-ynh_system_reload --service_name=yunorunner --action=start
+ynh_system_reload --service_name=$app --action=start

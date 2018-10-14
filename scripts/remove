@@ -16,6 +16,7 @@ source /usr/share/yunohost/helpers
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get $app domain)
+port=$(ynh_app_setting_get $app port)
 
 #=================================================
 # STANDARD REMOVE
@@ -57,10 +58,10 @@ ynh_remove_nginx_config	# Suppression de la configuration nginx
 # CLOSE A PORT
 #=================================================
 
-if yunohost firewall list | grep -q "\- 4242$"
+if yunohost firewall list | grep -q "\- $port$"
 then
-	ynh_print_info "Close port 4242" >&2
-	ynh_exec_quiet yunohost firewall disallow TCP 4242
+	ynh_print_info "Close port $port" >&2
+	ynh_exec_quiet yunohost firewall disallow TCP $port
 fi
 
 #=================================================

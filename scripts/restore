@@ -101,7 +101,7 @@ ynh_system_reload --service_name=nginx
 # START YUNORUNNER
 #=================================================
 
-ynh_system_reload --service_name=yunorunner --action=start
+ynh_system_reload --service_name=$app --action=start
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE

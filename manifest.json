@@ -5,7 +5,7 @@
 	"description": {
 		"en": "CI runner for YunoHost"
 	},
-	"version": "1.0~ynh1",
+	"version": "240918~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
 	"license": "free",
 	"maintainer": {
@@ -15,7 +15,7 @@
 	"requirements": {
 		"yunohost": ">= 3.1.0"
 	},
-	"multi_instance": false,
+	"multi_instance": true,
 	"services": [
 		"nginx"
 	],
