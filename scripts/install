@@ -127,8 +127,9 @@ ynh_add_systemd_config
 # CHANGE PORT IN YUNORUNNER
 #=================================================
 
-ynh_replace_string "localhost:4242" "localhost:$port" "$final_path/ciclic"
-ynh_replace_string "port=4242" "port=$port" "$final_path/run.py"
+ynh_replace_string "__PORT__" "$port" "/etc/systemd/system/$app.service"
+ynh_store_file_checksum "/etc/systemd/system/$app.service"
+systemctl daemon-reload
 
 #=================================================
 # GENERIC FINALISATION
