@@ -97,7 +97,7 @@ ynh_system_user_create $app	# Create the dedicated user, if not exist
 #=================================================
 
 ynh_add_systemd_config
-ynh_print_warn "Please have a look to the diff of your systemd conf file. The upgrade could have broken this CI."
+echo -e "\e[93m\e[1m[WARN]\e[0m Please have a look to the diff of your systemd conf file. The upgrade could have broken this CI." >&2
 
 #=================================================
 # CHANGE PORT IN YUNORUNNER
