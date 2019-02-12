@@ -5,7 +5,7 @@
 	"description": {
 		"en": "CI runner for YunoHost"
 	},
-	"version": "291218~ynh1",
+	"version": "010219~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
 	"license": "free",
 	"maintainer": {
