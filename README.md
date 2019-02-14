@@ -11,6 +11,16 @@ YunoRunner is our own CI runner for YunoHost Apps
 
 **Shipped version:** Work in progress...
 
+## Screenshots
+
+![](https://user-images.githubusercontent.com/30271971/52810447-e06b5600-3092-11e9-9853-fb46e46fda65.PNG)
+
+## Demo
+
+* [Official demo](https://ci-apps.yunohost.org)
+
+
+
 #### Supported architectures
 
 * x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/yunorunner%20%28Community%29.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
@@ -24,7 +34,7 @@ YunoRunner is our own CI runner for YunoHost Apps
 ## Links
 
  * Report a bug: https://github.com/YunoHost-Apps/yunorunner_ynh_core/issues
- * App website: Link to the official website of this app
+ * App website: https://github.com/YunoHost/yunorunner
  * YunoHost website: https://yunohost.org/
 
 ---
