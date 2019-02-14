@@ -19,7 +19,7 @@ YunoRunner is our own CI runner for YunoHost Apps
 
 * [Official demo](https://ci-apps.yunohost.org)
 
-
+## YunoHost specific features
 
 #### Supported architectures
 
