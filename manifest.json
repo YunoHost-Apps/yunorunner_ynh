@@ -3,8 +3,7 @@
 	"id": "yunorunner",
 	"packaging_format": 1,
 	"description": {
-		"en": "CI runner for YunoHost",
-        "fr": "Exemple de package dapplication pour YunoHost."
+		"en": "CI runner for YunoHost"
 	},
 	"version": "010219~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
