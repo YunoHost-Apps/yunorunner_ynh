@@ -123,9 +123,13 @@ $final_path/.pythonz/bin/pythonz install 3.6.6
 # INSTALL YUNORUNNER DEPENDENCIES
 #=================================================
 
-( cd $final_path
-virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
-ve3/bin/pip3 install -r requirements.txt )
+pushd $final_path
+    virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
+    ve3/bin/pip3 install -r requirements.txt
+	#Fix current websocket version error (2019-02-14)
+	ve3/bin/pip3 uninstall websockets
+	ve3/bin/pip3  install 'websockets>=6.0,<7.0'
+popd
 
 #=================================================
 # SETUP SYSTEMD

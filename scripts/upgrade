@@ -121,6 +121,15 @@ ynh_store_file_checksum "/etc/systemd/system/$app.service"
 systemctl daemon-reload
 
 #=================================================
+# Fix current websocket version error (2019-02-14)
+#=================================================
+
+pushd $final_path
+	ve3/bin/pip3 uninstall websockets
+	ve3/bin/pip3  install 'websockets>=6.0,<7.0'
+popd
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
