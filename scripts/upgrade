@@ -135,7 +135,7 @@ systemctl daemon-reload
 #=================================================
 
 pushd $final_path
-	ve3/bin/pip3 uninstall websockets
+	ve3/bin/pip3 -y uninstall websockets
 	ve3/bin/pip3  install 'websockets>=6.0,<7.0'
 popd
 
