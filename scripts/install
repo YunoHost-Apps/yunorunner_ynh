@@ -166,7 +166,7 @@ yunohost service add $app --description "$app daemon for YunoRunner"
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..."
+ynh_print_info "Configuring SSOwat..."
 
 # Make app public
 ynh_app_setting_set $app skipped_uris "/"
