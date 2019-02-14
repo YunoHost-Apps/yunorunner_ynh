@@ -41,6 +41,22 @@ ynh_print_info "Stopping and removing the service"
 ynh_remove_systemd_config
 
 #=================================================
+# REMOVE YUNORUNNER DEPENDENCIES
+#=================================================
+
+pushd $final_path
+    ve3/bin/pip3 uninstall -y -r requirements.txt
+popd
+/var/www/yunorunner/.pythonz/bin/pythonz install 3.6.6
+
+#=================================================
+# REMOVE PYTHON 3.6 AND PYTHONZ
+#=================================================
+
+$final_path/.pythonz/bin/pythonz uninstall 3.6.6
+$final_path/.pythonz/bin/pythonz cleanup
+
+#=================================================
 # REMOVE DEPENDENCIES
 #=================================================
 ynh_print_info "Removing dependencies"
