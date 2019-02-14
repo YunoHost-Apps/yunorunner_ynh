@@ -4,7 +4,7 @@
 	"packaging_format": 1,
 	"description": {
 		"en": "CI runner for YunoHost",
-		"fr": "CI runner for YunoHost"
+		"fr": "Runner intégration continue pour YunoHost"
 	},
 	"version": "010219~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
