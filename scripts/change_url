@@ -24,6 +24,10 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 # LOAD SETTINGS
 #=================================================
+ynh_print_info "Loading installation settings..."
+
+# Needed for helper "ynh_add_nginx_config"
+final_path=$(ynh_app_setting_get $app final_path)
 
 port=$(ynh_app_setting_get $app port)
 
@@ -72,6 +76,7 @@ ynh_abort_if_errors
 #=================================================
 # MODIFY URL IN NGINX CONF
 #=================================================
+ynh_print_info "Updating nginx configuration..."
 
 nginx_conf_path=/etc/nginx/conf.d/$old_domain.d/$app.conf
 
@@ -108,6 +113,7 @@ fi
 #=================================================
 # RELOAD NGINX
 #=================================================
+ynh_print_info "Reloading nginx..."
 
 ynh_system_reload --service_name=nginx
 
@@ -118,3 +124,9 @@ ynh_system_reload --service_name=nginx
 path_url=$old_path
 domain=$old_domain
 ynh_maintenance_mode_OFF
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info "Change of url completed for $app"
