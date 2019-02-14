@@ -81,7 +81,7 @@ chown -R $app:root $final_path
 ynh_print_info "Reinstall dependencies..."
 
 # Define and install dependencies
-ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
+ynh_install_app_dependencies python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev
 
 
 #=================================================
