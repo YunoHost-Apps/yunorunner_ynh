@@ -4,7 +4,7 @@
 	"packaging_format": 1,
 	"description": {
 		"en": "CI runner for YunoHost",
-		"fr": "Runner intégration continue pour YunoHost"
+		"fr": "Runner d'intégration continue pour YunoHost"
 	},
 	"version": "010219~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
@@ -29,7 +29,7 @@
 					"en": "Choose a domain for YunoRunner",
 					"fr": "Choisissez un domaine pour YunoRunner"
 				},
-				"example": "domain.org"
+				"example": "example.com"
 			},
 			{
 				"name": "path",
