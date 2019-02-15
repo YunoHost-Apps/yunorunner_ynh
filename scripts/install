@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC STARTING
+# GENERIC START
 #=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
@@ -10,15 +10,15 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE FAILURE OF THE SCRIPT
+# MANAGE SCRIPT FAILURE
 #=================================================
 
-# ynh_clean_setup () {
-# Nettoyage des résidus d'installation non pris en charge par le script remove.
-# Pas de nettoyage supplémentaire nécessaire ici...
-# 	echo ""
-# }
-ynh_abort_if_errors	# Active trap pour arrêter le script si une erreur est détectée.
+ynh_clean_setup () {
+	### Remove this function if there's nothing to clean before calling the remove script.
+	true
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
 #=================================================
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
@@ -32,6 +32,7 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
+ynh_print_info "Validating installation parameters..."
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
@@ -39,14 +40,13 @@ test ! -e "$final_path" || ynh_die "This path already contains a folder"
 # Normalize the url path syntax
 path_url=$(ynh_normalize_url_path $path_url)
 
-# Check web path availability
-ynh_webpath_available $domain $path_url
 # Register (book) web path
 ynh_webpath_register $app $domain $path_url
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
+ynh_print_info "Storing installation settings..."
 
 ynh_app_setting_set $app domain $domain
 ynh_app_setting_set $app path $path_url
@@ -56,36 +56,46 @@ ynh_app_setting_set $app path $path_url
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
+ynh_print_info "Configuring firewall..."
 
+# Find a free port
 port=$(ynh_find_port 4242)
-# Ouvre le port dans le firewall
-ynh_exec_fully_quiet yunohost firewall allow --no-upnp TCP $port
+# Open this port
+#ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $port
 ynh_app_setting_set $app port $port
 
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
+ynh_print_info "Installing dependencies..."
 
 ynh_install_app_dependencies python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_print_info "Setting up source files..."
 
 ynh_app_setting_set $app final_path $final_path
-ynh_setup_source "$final_path"	# Télécharge la source, décompresse et copie dans $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
+ynh_print_info "Configuring nginx..."
 
+# Create a dedicated nginx config
 ynh_add_nginx_config
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
+ynh_print_info "Configuring system user..."
 
-ynh_system_user_create $app	# Créer un utilisateur système dédié à l'app
+# Create a system user
+ynh_system_user_create $app
+
 
 #=================================================
 # SPECIFIC SETUP
@@ -113,14 +123,20 @@ $final_path/.pythonz/bin/pythonz install 3.6.6
 # INSTALL YUNORUNNER DEPENDENCIES
 #=================================================
 
-( cd $final_path
-virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
-ve3/bin/pip3 install -r requirements.txt )
+pushd $final_path
+    virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
+    ve3/bin/pip3 install -r requirements.txt
+	#Fix current websocket version error (2019-02-14)
+	ve3/bin/pip3 uninstall -y websockets
+	ve3/bin/pip3  install 'websockets>=6.0,<7.0'
+popd
 
 #=================================================
 # SETUP SYSTEMD
 #=================================================
+ynh_print_info "Configuring a systemd service..."
 
+# Create a dedicated systemd config
 ynh_add_systemd_config
 
 #=================================================
@@ -128,6 +144,7 @@ ynh_add_systemd_config
 #=================================================
 
 ynh_replace_string "__PORT__" "$port" "/etc/systemd/system/$app.service"
+# Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum "/etc/systemd/system/$app.service"
 systemctl daemon-reload
 
@@ -137,17 +154,19 @@ systemctl daemon-reload
 # SECURING FILES AND DIRECTORIES
 #=================================================
 
+# Set permissions to app files
 chown -R $app:root $final_path
 
 #=================================================
 # ENABLE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add $app.service
+yunohost service add $app --description "$app daemon for YunoRunner"
 
 #=================================================
 # SETUP SSOWAT
 #=================================================
+ynh_print_info "Configuring SSOwat..."
 
 # Make app public
 ynh_app_setting_set $app skipped_uris "/"
@@ -155,6 +174,7 @@ ynh_app_setting_set $app skipped_uris "/"
 #=================================================
 # RELOAD NGINX
 #=================================================
+ynh_print_info "Reloading nginx..."
 
 ynh_system_reload --service_name=nginx
 
@@ -163,3 +183,9 @@ ynh_system_reload --service_name=nginx
 #=================================================
 
 ynh_system_reload --service_name=$app --action=start
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info "Installation of $app completed"
