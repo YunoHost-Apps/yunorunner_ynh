@@ -1,5 +1,5 @@
-SOURCE_URL=https://github.com/YunoHost/yunorunner/archive/256de8fb3dc7d54237b01d5636987cde203b8173.zip
-SOURCE_SUM=cb094fcbb4b6279de7b853c109fc7c24
+SOURCE_URL=https://github.com/YunoHost/yunorunner/archive/b2efcc03c58170ced722d71cdf269ae73b63ed65.zip
+SOURCE_SUM=728efeb0ac3e6348cde60dea700db986
 SOURCE_SUM_PRG=md5sum
 SOURCE_FORMAT=zip
 SOURCE_IN_SUBDIR=true
