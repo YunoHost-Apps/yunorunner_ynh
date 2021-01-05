@@ -82,11 +82,10 @@ ynh_maintenance_mode_ON
 #=================================================
 ynh_print_info "Upgrading source files..."
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source "$final_path"
-fi
+pushd "$final_path"
+git fetch
+git reset --hard origin/master
+popd
 
 #=================================================
 # NGINX CONFIGURATION
