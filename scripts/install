@@ -37,9 +37,6 @@ ynh_print_info "Validating installation parameters..."
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
 
-# Normalize the url path syntax
-path_url=$(ynh_normalize_url_path $path_url)
-
 # Register (book) web path
 ynh_webpath_register $app $domain $path_url
 
@@ -56,7 +53,7 @@ ynh_app_setting_set $app path $path_url
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
-ynh_print_info "Configuring firewall..."
+ynh_script_progression --message="Configuring firewall..."
 
 # Find a free port
 port=$(ynh_find_port 4242)
@@ -67,23 +64,23 @@ ynh_app_setting_set $app port $port
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-ynh_print_info "Installing dependencies..."
+ynh_script_progression --message="Installing dependencies..."
 
-ynh_install_app_dependencies python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev
+ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_print_info "Setting up source files..."
+ynh_script_progression --message="Setting up source files..."
 
-ynh_app_setting_set $app final_path $final_path
+ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-git clone https://github.com/YunoHost/yunorunner "$final_path"
+git clone https://github.com/YunoHost/yunorunner --dest_dir="$final_path"
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_print_info "Configuring nginx..."
+ynh_script_progression --message="Configuring nginx..."
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -91,11 +88,10 @@ ynh_add_nginx_config
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_print_info "Configuring system user..."
+ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-ynh_system_user_create $app
-
+ynh_system_user_create --username=$app
 
 #=================================================
 # SPECIFIC SETUP
@@ -117,14 +113,14 @@ python $final_path/.pythonz/pythonz_install.py
 # fi
 
 # Install Python 3.6.6
-$final_path/.pythonz/bin/pythonz install 3.6.6
+$final_path/.pythonz/bin/pythonz install 3.7.3
 
 #=================================================
 # INSTALL YUNORUNNER DEPENDENCIES
 #=================================================
 
 pushd $final_path
-	virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.6.6) ve3
+	virtualenv -p $($final_path/.pythonz/bin/pythonz locate 3.7.3) ve3
 	ve3/bin/pip3 install -r requirements-frozen.txt
 	#Fix current websocket version error (2019-02-14)
 	ve3/bin/pip3 uninstall -y websockets
@@ -134,7 +130,7 @@ popd
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_print_info "Configuring a systemd service..."
+ynh_script_progression --message="Configuring a systemd service..."
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -143,7 +139,7 @@ ynh_add_systemd_config
 # CHANGE PORT IN YUNORUNNER
 #=================================================
 
-ynh_replace_string "__PORT__" "$port" "/etc/systemd/system/$app.service"
+ynh_replace_string --match_string="__PORT__" --replace_string="$port" --target_file="/etc/systemd/system/$app.service"
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum "/etc/systemd/system/$app.service"
 systemctl daemon-reload
@@ -161,22 +157,7 @@ chown -R $app:root $final_path
 # ENABLE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add $app --description "$app daemon for YunoRunner"
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_print_info "Configuring SSOwat..."
-
-# Make app public
-ynh_app_setting_set $app skipped_uris "/"
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_print_info "Reloading nginx..."
-
-ynh_system_reload --service_name=nginx
+yunohost service add $app --description="$app daemon for YunoRunner"
 
 #=================================================
 # START YUNORUNNER
@@ -185,7 +166,25 @@ ynh_system_reload --service_name=nginx
 ynh_system_reload --service_name=$app --action=start
 
 #=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Configuring SSOwat..."
+
+# Make app public if necessary or protect it
+if [ $is_public -eq 1 ]
+then
+	ynh_permission_update --permission "main" --add "visitors"
+fi
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading nginx..."
+
+ynh_system_reload --service_name=nginx
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info "Installation of $app completed"
+ynh_script_progression --message="Installation of $app completed"

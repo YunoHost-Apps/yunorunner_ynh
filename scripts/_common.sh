@@ -1,6 +1,13 @@
 #!/bin/bash
 
 #=================================================
+# COMMON VARIABLES
+#=================================================
+
+# dependencies used by the app
+pkg_dependencies="python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev"
+
+#=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
 
