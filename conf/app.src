@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/YunoHost/yunorunner/archive/0136788358610a6568f2f1a97f8d52ab2fd7fffb.tar.gz
-SOURCE_SUM=8e8dad60a30faf0280944b273654de1c0d06a427fdf31c91a077b8bc8ac8b1d8
-SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=tar.gz
-SOURCE_IN_SUBDIR=true
-SOURCE_FILENAME=yunorunner-2021-02-18.tar.gz
-SOURCE_EXTRACT=true
