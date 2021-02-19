@@ -46,6 +46,9 @@ if ynh_legacy_permissions_exists; then
 	ynh_app_setting_delete --app=$app --key=is_public
 fi
 
+# Remove Pythonz
+ynh_secure_remove --file="$final_path/.pythonz"
+
 #=================================================
 # CLOSE A PORT
 #=================================================
@@ -133,13 +136,23 @@ ynh_add_systemd_config --others_var="port domain path_url"
 echo -e "\e[93m\e[1m[WARN]\e[0m Please have a look to the diff of your systemd conf file. The upgrade could have broken this CI." >&2
 
 #=================================================
-# Fix current websocket version error (2019-02-14)
+# INSTALL PYTHON
 #=================================================
+ynh_script_progression --message="Installing Python..."
+
+ynh_install_python --python_version=$python_version
+
+#=================================================
+# INSTALL PYTHON DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	ve3/bin/pip3 uninstall -y websockets
-	ve3/bin/pip3 install 'websockets>=6.0,<7.0'
-	ve3/bin/pip3 install -r requirements-frozen.txt
+	pyenv virtualenv $python_version $app
+	/opt/pyenv/versions/$app/bin/pip3 install -r requirements-frozen.txt
+	#Fix current websocket version error (2019-02-14)
+	/opt/pyenv/versions/$app/bin/pip3 uninstall -y websockets
+	/opt/pyenv/versions/$app/bin/pip3 install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================

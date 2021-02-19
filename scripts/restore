@@ -90,6 +90,26 @@ ynh_script_progression --message="Reinstalling dependencies..."
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
+# INSTALL PYTHON
+#=================================================
+ynh_script_progression --message="Installing Python..."
+
+ynh_install_python --python_version=$python_version
+
+#=================================================
+# INSTALL PYTHON DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing Python dependencies..."
+
+pushd $final_path
+	pyenv virtualenv $python_version $app
+	/opt/pyenv/versions/$app/bin/pip3 install -r requirements-frozen.txt
+	#Fix current websocket version error (2019-02-14)
+	/opt/pyenv/versions/$app/bin/pip3 uninstall -y websockets
+	/opt/pyenv/versions/$app/bin/pip3 install 'websockets>=6.0,<7.0'
+popd
+
+#=================================================
 # RESTORE SYSTEMD
 #=================================================
 ynh_script_progression --message="Restoring the systemd configuration..."
