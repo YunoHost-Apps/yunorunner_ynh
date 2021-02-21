@@ -3,8 +3,8 @@
 	"id": "yunorunner",
 	"packaging_format": 1,
 	"description": {
-		"en": "CI runner for YunoHost",
-		"fr": "Runner d'intégration continue pour YunoHost"
+		"en": "CI runner of YunoHost",
+		"fr": "Runner d'intégration continue de YunoHost"
 	},
 	"version": "2021-02-18~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
