@@ -8,7 +8,7 @@
 	},
 	"version": "2021-02-18~ynh1",
 	"url": "https://github.com/YunoHost/yunorunner",
-	"license": "free",
+	"license": "GPL-3.0-or-later",
 	"maintainer": {
 		"name": "Maniack Crudelis",
 		"email": "maniackc_dev@crudelis.fr"
