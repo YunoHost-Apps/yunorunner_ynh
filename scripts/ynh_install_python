@@ -17,7 +17,11 @@ pyenv_dependencies="build-essential libssl1.0-dev|libssl-dev zlib1g-dev libbz2-d
 #
 # usage: ynh_install_pyenv
 ynh_install_pyenv () {
-  echo "Installation of pyenv - python version management" >&2
+  ynh_print_info --message="Installation of pyenv - Python Version Management - pyenv-$pyenv_version/pyenv-virtualenv-$pyenv_virtualenv_version"
+  
+  # Install required dependencies
+  ynh_add_app_dependencies --package="$pyenv_dependencies"
+
   # Build an app.src for pyenv
   mkdir -p "../conf"
   echo "SOURCE_URL=https://github.com/pyenv/pyenv/archive/v${pyenv_version}.tar.gz
@@ -87,7 +91,7 @@ ynh_install_python () {
   elif dpkg --compare-versions "$($pyenv_install_dir/bin/pyenv --version | cut -d" " -f2)" lt $pyenv_version
   then
     ynh_install_pyenv
-  elif dpkg --compare-versions "$($pyenv_install_dir/plugins/pyenv-virtualenv/bin/pyenv-virtualenv --version | cut -d" " -f2)" lt $pyenv_virtualenv_version
+  elif dpkg --compare-versions "$($pyenv_install_dir/bin/pyenv virtualenv --version | cut -d" " -f2)" lt $pyenv_virtualenv_version
   then
     ynh_install_pyenv
   fi
@@ -98,11 +102,9 @@ ynh_install_python () {
   # And replace the old python binary
   # test -x /usr/bin/python_pyenv && mv /usr/bin/python_pyenv /usr/bin/python
 
-  # Install required dependencies
-  ynh_add_app_dependencies --package="$pyenv_dependencies"
-
   # Install the requested version of python
-  pyenv install --skip-existing $python_version
+  ynh_print_info --message="Installation of Python-"$python_version
+  pyenv install --skip-existing $python_version &>/dev/null
 
   # Store the ID of this app and the version of python requested for it
   echo "$YNH_APP_ID:$python_version" | tee --append "$pyenv_install_dir/ynh_app_version"

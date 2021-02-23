@@ -107,10 +107,11 @@ ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
 	pyenv virtualenv $python_version $app
-	/opt/pyenv/versions/$app/bin/pip3 install -r requirements-frozen.txt
+	/opt/pyenv/versions/$app/bin/pip install --upgrade pip
+	/opt/pyenv/versions/$app/bin/pip install -r requirements-frozen.txt
 	#Fix current websocket version error (2019-02-14)
-	/opt/pyenv/versions/$app/bin/pip3 uninstall -y websockets
-	/opt/pyenv/versions/$app/bin/pip3 install 'websockets>=6.0,<7.0'
+	/opt/pyenv/versions/$app/bin/pip uninstall -y websockets
+	/opt/pyenv/versions/$app/bin/pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================
