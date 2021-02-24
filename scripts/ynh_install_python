@@ -75,21 +75,6 @@ ynh_install_python () {
   # Create the file if doesn't exist already
   touch "$pyenv_install_dir/ynh_app_version"
 
-  # Do not add twice the same line
-  if ! grep --quiet "$YNH_APP_INSTANCE_NAME:$python_version" "$pyenv_install_dir/ynh_app_version"
-  then
-
-    # Remove previous version
-    if grep --quiet "$YNH_APP_INSTANCE_NAME:" "$pyenv_install_dir/ynh_app_version"
-    then
-      pyenv virtualenv-delete --force $YNH_APP_INSTANCE_NAME
-      sed --in-place "/$YNH_APP_INSTANCE_NAME:/d" "$pyenv_install_dir/ynh_app_version"
-    fi
-
-    # Store the ID of this app and the version of Python requested for it
-    echo "$YNH_APP_INSTANCE_NAME:$python_version" | tee --append "$pyenv_install_dir/ynh_app_version"
-  fi
-
   # Install required dependencies
   ynh_add_app_dependencies --package="$pyenv_dependencies"
 
@@ -119,6 +104,21 @@ ynh_install_python () {
 
   # And replace the old Python binary
   # test -x /usr/bin/python_pyenv && mv /usr/bin/python_pyenv /usr/bin/python
+
+  # Do not add twice the same line
+  if ! grep --quiet "$YNH_APP_INSTANCE_NAME:$python_version" "$pyenv_install_dir/ynh_app_version"
+  then
+
+    # Remove previous version
+    if grep --quiet "$YNH_APP_INSTANCE_NAME:" "$pyenv_install_dir/ynh_app_version"
+    then
+      pyenv virtualenv-delete --force $YNH_APP_INSTANCE_NAME
+      sed --in-place "/$YNH_APP_INSTANCE_NAME:/d" "$pyenv_install_dir/ynh_app_version"
+    fi
+
+    # Store the ID of this app and the version of Python requested for it
+    echo "$YNH_APP_INSTANCE_NAME:$python_version" | tee --append "$pyenv_install_dir/ynh_app_version"
+  fi
 
   # Install the requested version of Python
   ynh_print_info --message="Installation of Python-"$python_version"
