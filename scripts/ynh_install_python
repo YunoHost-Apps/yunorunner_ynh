@@ -1,24 +1,24 @@
 #!/bin/bash
 
 # Need also the helper https://github.com/YunoHost-Apps/Experimental_helpers/blob/master/ynh_handle_getopts_args/ynh_handle_getopts_args
+
 pyenv_version=1.2.23
 pyenv_virtualenv_version=1.1.5
 pyenv_install_dir="/opt/pyenv"
-
 # PYENV_ROOT is the directory of pyenv, it needs to be loaded as a environment variable.
 export PYENV_ROOT="$pyenv_install_dir"
 
 # Required dependencies
 pyenv_dependencies="build-essential libssl1.0-dev|libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git"
 
-# Install python version management
+# Install Python Version Management
 #
 # [internal]
 #
 # usage: ynh_install_pyenv
 ynh_install_pyenv () {
   ynh_print_info --message="Installation of pyenv - Python Version Management - pyenv-$pyenv_version/pyenv-virtualenv-$pyenv_virtualenv_version"
-  
+
   # Build an app.src for pyenv
   mkdir -p "../conf"
   echo "SOURCE_URL=https://github.com/pyenv/pyenv/archive/v${pyenv_version}.tar.gz
@@ -42,12 +42,12 @@ if [ ! -d $pyenv_install_dir/shims ] ; then
 fi
 }
 
-# Install a specific version of python
+# Install a specific version of Python
 #
-# ynh_install_python will install the version of python provided as argument by using pyenv.
+# ynh_install_python will install the version of Python provided as argument by using pyenv.
 #
-# pyenv (python version management) stores the target python version in a .python_version file created in the target folder (using pyenv local <version>)
-# It then uses that information for every python user that uses pyenv provided python command
+# pyenv (Python Version Management) stores the target Python version in a .python_version file created in the target folder (using pyenv local <version>)
+# It then uses that information for every Python user that uses pyenv provided Python command
 #
 # This helper creates a /etc/profile.d/pyenv.sh that configures PATH environment for pyenv
 # for every LOGIN user, hence your user must have a defined shell (as opposed to /usr/sbin/nologin)
@@ -58,7 +58,7 @@ fi
 # to pyenv shims (e.g. $PYENV_ROOT/shims/bundle)
 #
 # usage: ynh_install_python --python_version=python_version
-# | arg: -v, --python_version= - Version of python to install.
+# | arg: -v, --python_version= - Version of Python to install.
 ynh_install_python () {
   # Declare an array to define the options of this helper.
   declare -Ar args_array=( [v]=python_version= )
@@ -78,14 +78,14 @@ ynh_install_python () {
   # Do not add twice the same line
   if ! grep --quiet "$YNH_APP_INSTANCE_NAME:$python_version" "$pyenv_install_dir/ynh_app_version"
   then
-    
+
     # Remove previous version
     if grep --quiet "$YNH_APP_INSTANCE_NAME:" "$pyenv_install_dir/ynh_app_version"
     then
       pyenv virtualenv-delete --force $YNH_APP_INSTANCE_NAME
       sed --in-place "/$YNH_APP_INSTANCE_NAME:/d" "$pyenv_install_dir/ynh_app_version"
     fi
-    
+
     # Store the ID of this app and the version of Python requested for it
     echo "$YNH_APP_INSTANCE_NAME:$python_version" | tee --append "$pyenv_install_dir/ynh_app_version"
   fi
@@ -96,10 +96,10 @@ ynh_install_python () {
   # Load pyenv path in PATH
   CLEAR_PATH="$pyenv_install_dir/bin:$PATH"
 
-  # Remove /usr/local/bin in PATH in case of python prior installation
+  # Remove /usr/local/bin in PATH in case of Python prior installation
   PATH=$(echo $CLEAR_PATH | sed 's@/usr/local/bin:@@')
 
-  # Move an existing python binary, to avoid to block pyenv
+  # Move an existing Python binary, to avoid to block pyenv
   #test -x /usr/bin/python && mv /usr/bin/python /usr/bin/python_pyenv
 
   # If pyenv is not previously setup, install it
@@ -117,25 +117,25 @@ ynh_install_python () {
   # Restore /usr/local/bin in PATH (if needed)
   PATH=$CLEAR_PATH
 
-  # And replace the old python binary
+  # And replace the old Python binary
   # test -x /usr/bin/python_pyenv && mv /usr/bin/python_pyenv /usr/bin/python
 
-  # Install the requested version of python
-  ynh_print_info --message="Installation of Python-"$python_version
+  # Install the requested version of Python
+  ynh_print_info --message="Installation of Python-"$python_version"
   pyenv install --skip-existing $python_version &>/dev/null
 
-  # Remove no more needed python version
+  # Remove no more needed Python version
   installed_python_version=$(pyenv versions --bare --skip-aliases | grep -Ev '/')
   for installed_version in $installed_python_version
   do
-    if ! grep --quiet "$installed_version" "$pyenv_install_dir/ynh_app_version"
+    if ! grep --quiet "$installed_version"aliases "$pyenv_install_dir/ynh_app_version"
     then
       ynh_print_info --message="Removing of Python-"$installed_version
       $pyenv_install_dir/bin/pyenv uninstall --force $installed_version
     fi
   done
 
-  # Set environment for python users
+  # Set environment for Python users
   echo  "#pyenv
 export PYENV_ROOT=$pyenv_install_dir
 export PATH=\"$pyenv_install_dir/bin:$PATH\"
@@ -151,11 +151,11 @@ eval \"\$(pyenv init -)\"
   pyenv virtualenv --force $python_version $YNH_APP_INSTANCE_NAME
 }
 
-# Remove the version of python used by the app.
+# Remove the version of Python used by the app.
 #
-# This helper will check if another app uses the same version of python,
-# if not, this version of python will be removed.
-# If no other app uses python, pyenv will be also removed.
+# This helper will check if another app uses the same version of Python,
+# if not, this version of Python will be removed.
+# If no other app uses Python, pyenv will be also removed.
 #
 # usage: ynh_remove_python
 ynh_remove_python () {
@@ -172,7 +172,7 @@ ynh_remove_python () {
   # Remove the line for this app
   sed --in-place "/$YNH_APP_INSTANCE_NAME:$python_version/d" "$pyenv_install_dir/ynh_app_version"
 
-  # If no other app uses this version of python, remove it.
+  # If no other app uses this version of Python, remove it.
   if ! grep --quiet "$python_version" "$pyenv_install_dir/ynh_app_version"
   then
     ynh_print_info --message="Removing of Python-"$python_version
