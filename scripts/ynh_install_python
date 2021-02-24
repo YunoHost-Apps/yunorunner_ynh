@@ -121,14 +121,14 @@ ynh_install_python () {
   fi
 
   # Install the requested version of Python
-  ynh_print_info --message="Installation of Python-"$python_version"
+  ynh_print_info --message="Installation of Python-"$python_version
   pyenv install --skip-existing $python_version &>/dev/null
 
   # Remove no more needed Python version
   installed_python_version=$(pyenv versions --bare --skip-aliases | grep -Ev '/')
   for installed_version in $installed_python_version
   do
-    if ! grep --quiet "$installed_version"aliases "$pyenv_install_dir/ynh_app_version"
+    if ! grep --quiet "$installed_version" "$pyenv_install_dir/ynh_app_version"
     then
       ynh_print_info --message="Removing of Python-"$installed_version
       $pyenv_install_dir/bin/pyenv uninstall --force $installed_version
