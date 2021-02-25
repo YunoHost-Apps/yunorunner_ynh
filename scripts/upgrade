@@ -98,7 +98,10 @@ then
 	ynh_script_progression --message="Upgrading source files..."
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path"
+	pushd "$final_path"
+		git fetch
+		git reset --hard origin/master "$yunorunner_release"
+	popd
 fi
 
 #=================================================
