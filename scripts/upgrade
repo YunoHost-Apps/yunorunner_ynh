@@ -87,7 +87,7 @@ ynh_maintenance_mode_ON
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="stop" --line_match="Stopped YunoRunner CI"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -123,7 +123,6 @@ ynh_script_progression --message="Making sure dedicated system user exists..."
 
 # Create a dedicated user (if not existing)
 ynh_system_user_create --username=$app
-
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -178,7 +177,7 @@ yunohost service add $app --description="$app daemon for YunoRunner"
 #=================================================
 ynh_script_progression --message="Starting a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="start"
+ynh_systemd_action --service_name=$app --action="start" --line_match="Started YunoRunner CI"
 
 #=================================================
 # RELOAD NGINX

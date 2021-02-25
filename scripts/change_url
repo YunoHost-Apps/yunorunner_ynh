@@ -79,7 +79,7 @@ fi
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop"
+ynh_systemd_action --service_name=$app --action="stop" --line_match="Stopped YunoRunner CI"
 
 #=================================================
 # MODIFY URL IN NGINX CONF
@@ -122,7 +122,7 @@ fi
 ynh_script_progression --message="Starting a systemd service..."
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start"
+ynh_systemd_action --service_name=$app --action="start" --line_match="Started YunoRunner CI"
 
 #=================================================
 # RELOAD NGINX
