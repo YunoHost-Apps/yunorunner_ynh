@@ -100,7 +100,8 @@ then
 	# Download, check integrity, uncompress and patch the source from app.src
 	pushd "$final_path"
 		git fetch
-		git reset --hard origin/master "$yunorunner_release"
+		git reset --hard origin/master
+		git reset --hard "$yunorunner_release"
 	popd
 fi
 
