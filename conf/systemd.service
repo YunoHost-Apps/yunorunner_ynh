@@ -8,7 +8,7 @@ Restart=always
 User=__APP__
 Group=__APP__
 WorkingDirectory=__FINALPATH__
-ExecStart=__FINALPATH__/ve3/bin/python ./run.py /home/CI_package_check/analyseCI.sh --port __PORT__ --base-url https://__DOMAIN____PATH__
+ExecStart=__FINALPATH__/ve3/bin/python ./run.py
 
 [Install]
 WantedBy=multi-user.target
