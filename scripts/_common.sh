@@ -11,7 +11,7 @@ python_version=3.6.6
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
-yunorunner_release="0136788358610a6568f2f1a97f8d52ab2fd7fffb"
+yunorunner_release="9fc2bf150c6dd126f1316fa44a26e574510e4da7"
 
 #=================================================
 # PERSONAL HELPERS
