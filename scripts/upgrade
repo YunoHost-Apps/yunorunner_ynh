@@ -145,6 +145,13 @@ ynh_script_progression --message="Upgrading systemd configuration..."
 ynh_add_systemd_config
 
 #=================================================
+# INSTALL PYTHON
+#=================================================
+ynh_script_progression --message="Installing Python..."
+
+ynh_install_python --python_version=$python_version
+
+#=================================================
 # INSTALL PYTHON DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing Python dependencies..."
