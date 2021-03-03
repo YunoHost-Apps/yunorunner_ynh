@@ -40,6 +40,14 @@ if [ -z "$port" ]; then
 	ynh_app_setting_set $app port $port
 fi
 
+if [[ ! -d "$final_path/.git/" ]]
+then
+	git init "$final_path"
+	pushd "$final_path"
+		git remote add origin "$yunorunner_repository"
+	popd
+fi
+
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
 	ynh_legacy_permissions_delete_all
@@ -99,9 +107,8 @@ then
 
 	# Download, check integrity, uncompress and patch the source from app.src
 	pushd "$final_path"
-		git fetch
-		git reset --hard origin/master
-		git reset --hard "$yunorunner_release"
+		git fetch --quiet --depth=1 origin "$yunorunner_release"
+		git reset --quiet --hard FETCH_HEAD
 	popd
 fi
 
