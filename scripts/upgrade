@@ -119,15 +119,6 @@ ynh_system_user_create $app
 #=================================================
 
 ynh_add_systemd_config
-echo -e "\e[93m\e[1m[WARN]\e[0m Please have a look to the diff of your systemd conf file. The upgrade could have broken this CI." >&2
-
-#=================================================
-# CHANGE PORT IN YUNORUNNER
-#=================================================
-
-ynh_replace_string "__PORT__" "$port" "/etc/systemd/system/$app.service"
-ynh_store_file_checksum "/etc/systemd/system/$app.service"
-systemctl daemon-reload
 
 #=================================================
 # Fix current websocket version error (2019-02-14)
