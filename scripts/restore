@@ -133,6 +133,12 @@ ynh_script_progression --message="Starting a systemd service..."
 ynh_systemd_action --service_name=$app --action="start" --line_match="Started YunoRunner CI"
 
 #=================================================
+# DEACTIVE MAINTENANCE MODE
+#=================================================
+
+ynh_maintenance_mode_OFF
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # RELOAD NGINX
@@ -140,12 +146,6 @@ ynh_systemd_action --service_name=$app --action="start" --line_match="Started Yu
 ynh_script_progression --message="Reloading NGINX web server..."
 
 ynh_systemd_action --service_name=nginx --action=reload
-
-#=================================================
-# DEACTIVE MAINTENANCE MODE
-#=================================================
-
-ynh_maintenance_mode_OFF
 
 #=================================================
 # END OF SCRIPT

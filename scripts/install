@@ -133,6 +133,8 @@ ynh_add_systemd_config --others_var="port domain path_url PYENV_ROOT"
 ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
 
 #=================================================
+# GENERIC FINALIZATION
+#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 ynh_script_progression --message="Securing files and directories..."
