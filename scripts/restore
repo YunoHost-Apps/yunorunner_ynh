@@ -89,12 +89,6 @@ ynh_script_progression --message="Reinstalling dependencies..."
 
 # Define and install dependencies
 ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# INSTALL PYTHON
-#=================================================
-ynh_script_progression --message="Installing Python..."
-
 ynh_install_python --python_version=$python_version
 
 #=================================================
@@ -103,11 +97,12 @@ ynh_install_python --python_version=$python_version
 ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	$PYENV_ROOT/versions/$app/bin/pip install --upgrade pip
-	$PYENV_ROOT/versions/$app/bin/pip install -r requirements-frozen.txt
+	ynh_use_python
+	$ynh_pip install --upgrade pip
+	$ynh_pip install -r requirements-frozen.txt
 	#Fix current websocket version error (2019-02-14)
-	$PYENV_ROOT/versions/$app/bin/pip uninstall -y websockets
-	$PYENV_ROOT/versions/$app/bin/pip install 'websockets>=6.0,<7.0'
+	$ynh_pip uninstall -y websockets
+	$ynh_pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================
@@ -130,7 +125,7 @@ yunohost service add $app --description="$app daemon for YunoRunner"
 #=================================================
 ynh_script_progression --message="Starting a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="start" --line_match="Started YunoRunner CI"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started YunoRunner CI"
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
