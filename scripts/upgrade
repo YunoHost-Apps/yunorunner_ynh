@@ -76,7 +76,7 @@ ynh_script_progression --message="Backing up the app before upgrading (may take 
 # Backup the current version of the app
 ynh_backup_before_upgrade
 ynh_clean_setup () {
-	# restore it if the upgrade fails
+	# Restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
@@ -117,7 +117,7 @@ fi
 #=================================================
 ynh_script_progression --message="Upgrading NGINX web server configuration..."
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -162,6 +162,7 @@ ynh_add_systemd_config --others_var="ynh_python"
 #=================================================
 # CONFIGURE YUNORUNNER
 #=================================================
+ynh_script_progression --message="Configuring YunoRunner..."
 
 ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
 

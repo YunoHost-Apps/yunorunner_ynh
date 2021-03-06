@@ -86,7 +86,7 @@ popd
 #=================================================
 ynh_script_progression --message="Configuring NGINX web server..."
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -124,6 +124,7 @@ ynh_add_systemd_config --others_var="ynh_python"
 #=================================================
 # CONFIGURE YUNORUNNER
 #=================================================
+ynh_script_progression --message="Configuring YunoRunner..."
 
 ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
 
