@@ -6,6 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
+# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
@@ -13,18 +14,21 @@ source /usr/share/yunohost/helpers
 # MANAGE SCRIPT FAILURE
 #=================================================
 
+ynh_clean_setup () {
+	true
+}
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_print_info "Loading installation settings..."
+ynh_print_info --message="Loading installation settings..."
 
 app=$YNH_APP_INSTANCE_NAME
 
-final_path=$(ynh_app_setting_get $app final_path)
-domain=$(ynh_app_setting_get $app domain)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+domain=$(ynh_app_setting_get --app=$app --key=domain)
 
 #=================================================
 # DECLARE DATA AND CONF FILES TO BACKUP
@@ -55,4 +59,4 @@ ynh_backup --src_path="/etc/systemd/system/$app.service"
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
