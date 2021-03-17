@@ -8,7 +8,6 @@
 
 # Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
-source ../settings/scripts/ynh_install_python
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -89,7 +88,6 @@ ynh_script_progression --message="Reinstalling dependencies..."
 
 # Define and install dependencies
 ynh_install_app_dependencies $pkg_dependencies
-ynh_install_python --python_version=$PYTHON_VERSION
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
@@ -97,12 +95,12 @@ ynh_install_python --python_version=$PYTHON_VERSION
 ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	ynh_use_python
-	$ynh_pip install --upgrade pip
-	$ynh_pip install -r requirements-frozen.txt
+	python3 -m venv venv
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install -r requirements-frozen.txt
 	#Fix current websocket version error (2019-02-14)
-	$ynh_pip uninstall -y websockets
-	$ynh_pip install 'websockets>=6.0,<7.0'
+	venv/bin/pip uninstall -y websockets
+	venv/bin/pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================

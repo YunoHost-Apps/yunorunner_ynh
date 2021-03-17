@@ -5,9 +5,7 @@
 #=================================================
 
 # dependencies used by the app
-pkg_dependencies="sqlite3"
-
-PYTHON_VERSION=3.6.6
+pkg_dependencies="python3-venv python3-dev python3-pip sqlite3"
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 

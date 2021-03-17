@@ -7,7 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_install_python
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -65,7 +64,6 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 ynh_script_progression --message="Installing dependencies..."
 
 ynh_install_app_dependencies $pkg_dependencies
-ynh_install_python --python_version=$PYTHON_VERSION
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -105,12 +103,12 @@ ynh_system_user_create --username=$app
 ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	ynh_use_python
-	$ynh_pip install --upgrade pip
-	$ynh_pip install -r requirements-frozen.txt
+	python3 -m venv venv
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install -r requirements-frozen.txt
 	#Fix current websocket version error (2019-02-14)
-	$ynh_pip uninstall -y websockets
-	$ynh_pip install 'websockets>=6.0,<7.0'
+	venv/bin/pip uninstall -y websockets
+	venv/bin/pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================
@@ -119,7 +117,7 @@ popd
 ynh_script_progression --message="Configuring a systemd service..."
 
 # Create a dedicated systemd config
-ynh_add_systemd_config --others_var="ynh_python"
+ynh_add_systemd_config
 
 #=================================================
 # CONFIGURE YUNORUNNER
