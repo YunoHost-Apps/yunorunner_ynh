@@ -23,8 +23,8 @@ YunoRunner is our own CI runner for YunoHost Apps
 
 #### Supported architectures
 
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/yunorunner%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/yunorunner%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/yunorunner/)
+* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/yunorunner.svg)](https://ci-apps-arm.yunohost.org/ci/apps/yunorunner/)
 
 ## Limitations
 
@@ -42,11 +42,11 @@ YunoRunner is our own CI runner for YunoHost Apps
 
 ## Developer info
 
-Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing).
+Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/yunorunner_ynh_core/tree/testing).
 
 To try the testing branch, please proceed like that.
 ```
-sudo yunohost app install https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
+sudo yunohost app install https://github.com/YunoHost-Apps/yunorunner_ynh_core/tree/testing --debug
 or
-sudo yunohost app upgrade yunorunner -u https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
+sudo yunohost app upgrade yunorunner -u https://github.com/YunoHost-Apps/yunorunner_ynh_core/tree/testing --debug
 ```

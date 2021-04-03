@@ -10,6 +10,9 @@
     "url": "https://github.com/YunoHost/yunorunner",
     "license": "GPL-3.0-or-later",
     "maintainer": {
+        "name": ""
+    },
+    "previous_maintainer": {
         "name": "Maniack Crudelis",
         "email": "maniackc_dev@crudelis.fr"
     },
@@ -25,19 +28,11 @@
             {
                 "name": "domain",
                 "type": "domain",
-                "ask": {
-                    "en": "Choose a domain name for YunoRunner",
-                    "fr": "Choisissez un nom de domaine pour YunoRunner"
-                },
                 "example": "example.com"
             },
             {
                 "name": "path",
                 "type": "path",
-                "ask": {
-                    "en": "Choose a path for YunoRunner",
-                    "fr": "Choisissez un chemin pour YunoRunner"
-                },
                 "example": "/yunorunner",
                 "default": "/yunorunner"
             }
