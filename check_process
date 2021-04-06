@@ -12,24 +12,15 @@
 		setup_private=0
 		setup_public=1
 		upgrade=1
-		upgrade=1	from_commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
+		# 03 Sep 2018
+		# upgrade=1	from_commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
+		# 041120
+		# upgrade=1	from_commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
 		backup_restore=1
 		multi_instance=1
 		incorrect_path=1
 		port_already_use=1 (4242)
 		change_url=1
-;;; Levels
-	Level 1=auto
-	Level 2=auto
-	Level 3=auto
-# Level 4: No users management
-	Level 4=na
-	Level 5=auto
-	Level 6=auto
-	Level 7=auto
-	Level 8=0
-	Level 9=0
-	Level 10=0
 ;;; Options
 Email=
 Notification=down
@@ -37,3 +28,5 @@ Notification=down
 	; commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
 		name=03 Sep 2018 04cb5f0ec18def9d50fa861c16d491275843b9e7
 		manifest_arg=domain=DOMAIN&path=PATH&
+	; commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
+		name=041120

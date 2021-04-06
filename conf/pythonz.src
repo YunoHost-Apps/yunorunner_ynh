@@ -1,6 +1,0 @@
-SOURCE_URL=https://github.com/saghul/pythonz/archive/pythonz-2.0.0.tar.gz
-SOURCE_SUM=239f981b79e097452b13b1ba7a92725f
-SOURCE_SUM_PRG=md5sum
-SOURCE_FORMAT=tar.gz
-SOURCE_IN_SUBDIR=true
-SOURCE_FILENAME=

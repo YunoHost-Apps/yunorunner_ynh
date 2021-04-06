@@ -12,25 +12,26 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_print_info "Loading installation settings..."
+ynh_script_progression --message="Loading installation settings..."
 
 app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get $app domain)
-path_url=$(ynh_app_setting_get $app path)
-final_path=$(ynh_app_setting_get $app final_path)
-port=$(ynh_app_setting_get $app port)
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+path_url=$(ynh_app_setting_get --app=$app --key=path)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+port=$(ynh_app_setting_get --app=$app --key=port)
 
 #=================================================
 # CHECK VERSION
 #=================================================
+ynh_script_progression --message="Checking version..."
 
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_print_info "Ensuring downward compatibility..."
+ynh_script_progression --message="Ensuring downward compatibility..."
 
 # If port doesn't exist, create it
 if [ -z "$port" ]; then
@@ -38,36 +39,47 @@ if [ -z "$port" ]; then
 	ynh_app_setting_set $app port $port
 fi
 
+if [[ ! -d "$final_path/.git/" ]]
+then
+	git init "$final_path"
+	pushd "$final_path"
+		git remote add origin "$yunorunner_repository"
+	popd
+fi
+
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+	ynh_legacy_permissions_delete_all
+
+	ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+# Remove Pythonz
+ynh_secure_remove --file="$final_path/.pythonz"
+
 #=================================================
 # CLOSE A PORT
 #=================================================
 
 if yunohost firewall list | grep -q "\- $port$"
 then
-	ynh_print_info "Closing port $port"
+	ynh_script_progression --message="Closing port $port"
 	ynh_exec_warn_less yunohost firewall disallow TCP $port
 fi
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_print_info "Backing up the app before upgrading... (may take a while)"
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
 ynh_clean_setup () {
-	# restore it if the upgrade fails
+	# Restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
-
-#=================================================
-# CHECK THE PATH
-#=================================================
-
-# Normalize the URL path syntax
-path_url=$(ynh_normalize_url_path $path_url)
 
 #=================================================
 # ACTIVATE MAINTENANCE MODE
@@ -78,97 +90,103 @@ ynh_maintenance_mode_ON
 #=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..."
+
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped YunoRunner CI"
+
+#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_print_info "Upgrading source files..."
 
-pushd "$final_path"
-git fetch
-git reset --hard origin/master
-popd
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading source files..."
+
+	# Download, check integrity, uncompress and patch the source from app.src
+	pushd "$final_path"
+		git fetch --quiet --depth=1 origin "$yunorunner_release"
+		git reset --quiet --hard FETCH_HEAD
+	popd
+fi
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_print_info "Upgrading nginx configuration..."
+ynh_script_progression --message="Upgrading NGINX web server configuration..."
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
-ynh_print_info "Upgrading dependencies..."
+ynh_script_progression --message="Upgrading dependencies..."
 
-ynh_install_app_dependencies python-virtualenv sqlite3 zlib1g-dev
-
+ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_print_info "Making sure dedicated system user exists..."
+ynh_script_progression --message="Making sure dedicated system user exists..."
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create $app
-
+ynh_system_user_create --username=$app
 
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# SETUP SYSTEMD
+# INSTALL PYTHON DEPENDENCIES
 #=================================================
-
-ynh_add_systemd_config
-echo -e "\e[93m\e[1m[WARN]\e[0m Please have a look to the diff of your systemd conf file. The upgrade could have broken this CI." >&2
-
-#=================================================
-# CHANGE PORT IN YUNORUNNER
-#=================================================
-
-ynh_replace_string "__PORT__" "$port" "/etc/systemd/system/$app.service"
-ynh_store_file_checksum "/etc/systemd/system/$app.service"
-systemctl daemon-reload
-
-#=================================================
-# Fix current websocket version error (2019-02-14)
-#=================================================
+ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	ve3/bin/pip3 uninstall -y websockets
-	ve3/bin/pip3 install 'websockets>=6.0,<7.0'
-	ve3/bin/pip3 install -r requirements-frozen.txt
+	python3 -m venv venv
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install -r requirements-frozen.txt
+	#Fix current websocket version error (2019-02-14)
+	venv/bin/pip uninstall -y websockets
+	venv/bin/pip install 'websockets>=6.0,<7.0'
 popd
+
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression --message="Upgrading systemd configuration..."
+
+ynh_add_systemd_config
+
+#=================================================
+# CONFIGURE YUNORUNNER
+#=================================================
+ynh_script_progression --message="Configuring YunoRunner..."
+
+ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
 
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
+ynh_script_progression --message="Securing files and directories..."
 
 # Set permissions on app files
 chown -R $app:root $final_path
 
 #=================================================
-# SETUP SSOWAT
+# INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_print_info "Upgrading SSOwat configuration..."
+ynh_script_progression --message="Integrating service in YunoHost..."
 
-# Make app public
-ynh_app_setting_set $app skipped_uris "/"
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_print_info "Reloading nginx..."
-
-ynh_system_reload --service_name=nginx
+yunohost service add $app --description="$app daemon for YunoRunner"
 
 #=================================================
-# RESTART YUNORUNNER
+# START SYSTEMD SERVICE
 #=================================================
+ynh_script_progression --message="Starting a systemd service..."
 
-ynh_system_reload --service_name=$app --action=restart
-
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started YunoRunner CI"
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
@@ -177,7 +195,14 @@ ynh_system_reload --service_name=$app --action=restart
 ynh_maintenance_mode_OFF
 
 #=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading NGINX web server..."
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info "Upgrade of $app completed"
+ynh_script_progression --message="Upgrade of $app completed"

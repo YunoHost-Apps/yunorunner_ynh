@@ -6,6 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
+# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
@@ -13,29 +14,32 @@ source /usr/share/yunohost/helpers
 # MANAGE SCRIPT FAILURE
 #=================================================
 
+ynh_clean_setup () {
+	true
+}
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_print_info "Loading settings..."
+ynh_script_progression --message="Loading settings..."
 
 app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get $app domain)
-path_url=$(ynh_app_setting_get $app path)
-final_path=$(ynh_app_setting_get $app final_path)
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+path_url=$(ynh_app_setting_get --app=$app --key=path)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
-ynh_print_info "Validating restoration parameters..."
+ynh_script_progression --message="Validating restoration parameters..."
 
-ynh_webpath_available $domain $path_url \
-	|| ynh_die "Path not available: ${domain}${path_url}"
+ynh_webpath_available --domain=$domain --path_url=$path_url \
+	|| ynh_die --message="Path not available: ${domain}${path_url}"
 test ! -d $final_path \
-	|| ynh_die "There is already a directory: $final_path "
+	|| ynh_die --message="There is already a directory: $final_path "
 
 #=================================================
 # ACTIVATE MAINTENANCE MODE
@@ -48,70 +52,78 @@ ynh_maintenance_mode_ON
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
 #=================================================
+ynh_script_progression --message="Restoring the NGINX web server configuration..."
 
-ynh_restore_file "/etc/nginx/conf.d/$domain.d/$app.conf"
+ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
-ynh_print_info "Restore the app main directory..."
+ynh_script_progression --message="Restoring the app main directory..."
 
-ynh_restore_file "$final_path"
+ynh_restore_file --origin_path="$final_path"
 
 #=================================================
 # RECREATE THE DEDICATED USER
 #=================================================
-ynh_print_info "Recreate the dedicated systen user..."
+ynh_script_progression --message="Recreating the dedicated system user..."
 
 # Create the dedicated user (if not existing)
-ynh_system_user_create $app
+ynh_system_user_create --username=$app
 
 #=================================================
 # RESTORE USER RIGHTS
 #=================================================
+ynh_script_progression --message="Restoring user rights..."
 
 # Restore permissions on app files
 chown -R $app:root $final_path
 
 #=================================================
-# SPECIFIC RESTORE
+# SPECIFIC RESTORATION
 #=================================================
 # REINSTALL DEPENDENCIES
 #=================================================
-ynh_print_info "Reinstall dependencies..."
+ynh_script_progression --message="Reinstalling dependencies..."
 
 # Define and install dependencies
-ynh_install_app_dependencies python-virtualenv sqlite3 libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev
+ynh_install_app_dependencies $pkg_dependencies
 
+#=================================================
+# INSTALL PYTHON DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing Python dependencies..."
+
+pushd $final_path
+	python3 -m venv venv
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install -r requirements-frozen.txt
+	#Fix current websocket version error (2019-02-14)
+	venv/bin/pip uninstall -y websockets
+	venv/bin/pip install 'websockets>=6.0,<7.0'
+popd
 
 #=================================================
 # RESTORE SYSTEMD
 #=================================================
-ynh_print_info "Restoring the systemd configuration..."
+ynh_script_progression --message="Restoring the systemd configuration..."
 
-ynh_restore_file "/etc/systemd/system/$app.service"
-systemctl enable $app.service
-
-#=================================================
-# ADVERTISE SERVICE IN ADMIN PANEL
-#=================================================
-
-yunohost service add $app --description "$app daemon for YunoRunner"
+ynh_restore_file --origin_path="/etc/systemd/system/$app.service"
+systemctl enable $app.service --quiet
 
 #=================================================
-# GENERIC FINALIZATION
+# INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-# RELOAD NGINX
-#=================================================
-ynh_print_info "Reloading nginx"
+ynh_script_progression --message="Integrating service in YunoHost..."
 
-ynh_system_reload --service_name=nginx
+yunohost service add $app --description="$app daemon for YunoRunner"
 
 #=================================================
-# START YUNORUNNER
+# START SYSTEMD SERVICE
 #=================================================
+ynh_script_progression --message="Starting a systemd service..."
 
-ynh_system_reload --service_name=$app --action=start
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started YunoRunner CI"
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
@@ -120,7 +132,16 @@ ynh_system_reload --service_name=$app --action=start
 ynh_maintenance_mode_OFF
 
 #=================================================
+# GENERIC FINALIZATION
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading NGINX web server..."
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info "Restoration completed for $app"
+ynh_script_progression --message="Restoration completed for $app"
