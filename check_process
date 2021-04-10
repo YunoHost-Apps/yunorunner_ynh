@@ -16,6 +16,8 @@
 		# upgrade=1	from_commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
 		# 041120
 		# upgrade=1	from_commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
+		# 2021-03-05~ynh1
+		upgrade=1	from_commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
 		backup_restore=1
 		multi_instance=1
 		incorrect_path=1
@@ -30,3 +32,5 @@ Notification=down
 		manifest_arg=domain=DOMAIN&path=PATH&
 	; commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
 		name=041120
+	; commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
+		name=2021-03-05~ynh1
