@@ -20,7 +20,6 @@
 		upgrade=1	from_commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
 		backup_restore=1
 		multi_instance=1
-		incorrect_path=1
 		port_already_use=1 (4242)
 		change_url=1
 ;;; Options

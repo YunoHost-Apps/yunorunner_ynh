@@ -36,7 +36,7 @@ ynh_script_progression --message="Ensuring downward compatibility..."
 # If port doesn't exist, create it
 if [ -z "$port" ]; then
 	port=4242
-	ynh_app_setting_set $app port $port
+	ynh_app_setting_set --app=$app --key=port --value=$port
 fi
 
 if [[ ! -d "$final_path/.git/" ]]
