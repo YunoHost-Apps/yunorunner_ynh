@@ -9,7 +9,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 ## Overview
 YunoRunner is our own CI runner for YunoHost Apps
 
-**Shipped version:** 2021-03-05
+**Shipped version:** 2021-06-30~ynh1
 
 ## Screenshots
 
