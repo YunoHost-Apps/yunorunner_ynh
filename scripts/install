@@ -71,7 +71,7 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-ynh_system_user_create --username=$app --home_dir="$final_path"
+ynh_system_user_create --username=$app --home_dir=$final_path
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -110,9 +110,6 @@ pushd $final_path
 	python3 -m venv venv
 	venv/bin/pip install --upgrade pip
 	venv/bin/pip install -r requirements-frozen.txt
-	#Fix current websocket version error (2019-02-14)
-	venv/bin/pip uninstall -y websockets
-	venv/bin/pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================

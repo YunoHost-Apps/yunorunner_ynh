@@ -8,6 +8,10 @@
     },
     "version": "2021-06-30~ynh1",
     "url": "https://github.com/YunoHost/yunorunner",
+    "upstream": {
+        "license": "GPL-3.0-or-later",
+        "code": "https://github.com/YunoHost/yunorunner"
+    },
     "license": "GPL-3.0-or-later",
     "maintainer": {
         "name": ""

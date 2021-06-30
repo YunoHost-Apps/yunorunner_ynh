@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 User=__APP__
 Group=__APP__
-WorkingDirectory=__FINALPATH__
+WorkingDirectory=__FINALPATH__/
 ExecStart=__FINALPATH__/venv/bin/python ./run.py
 
 [Install]
