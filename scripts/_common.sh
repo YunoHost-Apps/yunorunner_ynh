@@ -9,7 +9,7 @@ pkg_dependencies="python3-venv python3-dev python3-pip sqlite3"
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
-yunorunner_release="9cde6e979a59424396659fa934323a677ba8c960"
+yunorunner_release="0e87f07e8bcb1f3aee055a694f3c7198e22b4019"
 
 #=================================================
 # PERSONAL HELPERS
