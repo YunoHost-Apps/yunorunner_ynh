@@ -29,35 +29,6 @@ ynh_script_progression --message="Checking version..."
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
-# ENSURE DOWNWARD COMPATIBILITY
-#=================================================
-ynh_script_progression --message="Ensuring downward compatibility..."
-
-# If port doesn't exist, create it
-if [ -z "$port" ]; then
-	port=4242
-	ynh_app_setting_set --app=$app --key=port --value=$port
-fi
-
-if [[ ! -d "$final_path/.git/" ]]
-then
-	git init "$final_path"
-	pushd "$final_path"
-		git remote add origin "$yunorunner_repository"
-	popd
-fi
-
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-# Remove Pythonz
-ynh_secure_remove --file="$final_path/.pythonz"
-
-#=================================================
 # CLOSE A PORT
 #=================================================
 
@@ -97,12 +68,41 @@ ynh_script_progression --message="Stopping a systemd service..."
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped YunoRunner CI"
 
 #=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+ynh_script_progression --message="Ensuring downward compatibility..."
+
+# If port doesn't exist, create it
+if [ -z "$port" ]; then
+	port=4242
+	ynh_app_setting_set --app=$app --key=port --value=$port
+fi
+
+if [[ ! -d "$final_path/.git/" ]]
+then
+	git init "$final_path"
+	pushd "$final_path"
+		git remote add origin "$yunorunner_repository"
+	popd
+fi
+
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+	ynh_legacy_permissions_delete_all
+
+	ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+# Remove Pythonz
+ynh_secure_remove --file="$final_path/.pythonz"
+
+#=================================================
 # CREATE DEDICATED USER
 #=================================================
 ynh_script_progression --message="Making sure dedicated system user exists..."
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir="$final_path"
+ynh_system_user_create --username=$app --home_dir=$final_path
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
