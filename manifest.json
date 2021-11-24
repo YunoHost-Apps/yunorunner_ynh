@@ -6,7 +6,7 @@
         "en": "CI runner of YunoHost",
         "fr": "Runner d'intégration continue de YunoHost"
     },
-    "version": "2021-09-22~ynh2",
+    "version": "2021.09.22~ynh3",
     "url": "https://github.com/YunoHost/yunorunner",
     "upstream": {
         "license": "GPL-3.0-or-later",
