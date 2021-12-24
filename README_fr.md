@@ -19,7 +19,7 @@ Runner d'intégration continue de YunoHost
 
 ## Captures d'écran
 
-![](./doc/screenshots/screenshot1.png)
+![](./doc/screenshots/screenshot.png)
 
 ## Avertissements / informations importantes
 

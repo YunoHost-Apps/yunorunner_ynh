@@ -23,7 +23,7 @@ CI runner of YunoHost
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot1.png)
+![](./doc/screenshots/screenshot.png)
 
 ## Disclaimers / important information
 
