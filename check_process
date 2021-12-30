@@ -12,10 +12,6 @@
 		setup_private=0
 		setup_public=1
 		upgrade=1
-		# 03 Sep 2018
-		# upgrade=1	from_commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
-		# 041120
-		# upgrade=1	from_commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
 		# 2021-03-05~ynh1
 		upgrade=1	from_commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
 		# 2021-09-22~ynh1
@@ -28,11 +24,6 @@
 Email=
 Notification=down
 ;;; Upgrade options
-	; commit=04cb5f0ec18def9d50fa861c16d491275843b9e7
-		name=03 Sep 2018 04cb5f0ec18def9d50fa861c16d491275843b9e7
-		manifest_arg=domain=DOMAIN&path=PATH&
-	; commit=7b3acfc9b28b6ed33a1590ae16261d7dd3b5b06a
-		name=041120
 	; commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
 		name=2021-03-05~ynh1
 	; commit=fea498cd83a7da12a102efe2f47397dace3cddda
