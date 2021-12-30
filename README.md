@@ -17,13 +17,13 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 CI runner of YunoHost
 
-**Shipped version:** 2021-09-22~ynh2
+**Shipped version:** 2021.09.22~ynh3
 
 
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot1.png)
+![](./doc/screenshots/screenshot.png)
 
 ## Disclaimers / important information
 
