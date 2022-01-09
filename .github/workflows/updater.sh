@@ -16,7 +16,7 @@ current_version=$(cat manifest.json | jq -j '.version|split("~")[0]')
 current_yunorunner_release=$(grep -Po 'yunorunner_release="\K.*?(?=")' scripts/_common.sh)
 repo=$(cat manifest.json | jq -j '.upstream.code|split("https://github.com/")[1]')
 # Some jq magic is needed, because the latest upstream release is not always the latest version (e.g. security patches for older versions)
-version=$(curl --silent "https://api.github.com/repos/$repo/commits/master" | jq -r '.commit.committer.date | split("T")[0]')
+version=$(curl --silent "https://api.github.com/repos/$repo/commits/master" | jq -r '.commit.committer.date | split("T")[0] | gsub("-";".")')
 yunorunner_release=$(curl --silent "https://api.github.com/repos/$repo/commits/master" | jq -r '.sha')
 
 # Setting up the environment variables
