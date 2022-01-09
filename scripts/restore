@@ -36,10 +36,7 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 #=================================================
 ynh_script_progression --message="Validating restoration parameters..."
 
-ynh_webpath_available --domain=$domain --path_url=$path_url \
-	|| ynh_die --message="Path not available: ${domain}${path_url}"
-test ! -d $final_path \
-	|| ynh_die --message="There is already a directory: $final_path "
+test ! -d $final_path || ynh_die --message="There is already a directory: $final_path "
 
 #=================================================
 # ACTIVATE MAINTENANCE MODE
@@ -94,9 +91,6 @@ pushd $final_path
 	python3 -m venv venv
 	venv/bin/pip install --upgrade pip
 	venv/bin/pip install -r requirements-frozen.txt
-	#Fix current websocket version error (2019-02-14)
-	venv/bin/pip uninstall -y websockets
-	venv/bin/pip install 'websockets>=6.0,<7.0'
 popd
 
 #=================================================
