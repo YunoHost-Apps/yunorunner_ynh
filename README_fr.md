@@ -13,7 +13,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Runner d'intégration continue de YunoHost
 
-**Version incluse :** 2021.10.19~ynh1
+**Version incluse :** 2022.01.09~ynh1
 
 
 
