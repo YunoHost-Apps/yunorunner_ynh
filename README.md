@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 CI runner of YunoHost
 
-**Shipped version:** 2021.09.22~ynh3
+**Shipped version:** 2022.01.09~ynh1
 
 
 
