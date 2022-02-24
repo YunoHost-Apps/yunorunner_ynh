@@ -5,7 +5,7 @@
 #=================================================
 
 # dependencies used by the app
-pkg_dependencies="python3-venv python3-dev python3-pip sqlite3"
+pkg_dependencies="python3-venv python3-dev python3-pip sqlite3 wkhtmltopdf optipng"
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
