@@ -156,7 +156,7 @@ popd
 #=================================================
 ynh_script_progression --message="Updating a config file..."
 
-ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
+ynh_backup_if_checksum_is_different --file="$final_path/config.py"
 
 chmod 400 "$final_path/config.py"
 chown $app:$app "$final_path/config.py"
