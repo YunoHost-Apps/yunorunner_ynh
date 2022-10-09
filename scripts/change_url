@@ -30,6 +30,7 @@ ynh_script_progression --message="Loading installation settings..."
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 port=$(ynh_app_setting_get --app=$app --key=port)
+ci_package_check_datadir=$(ynh_app_setting_get --app=$app --key=ci_package_check_datadir)
 
 #=================================================
 # BACKUP BEFORE CHANGE URL THEN ACTIVE TRAP

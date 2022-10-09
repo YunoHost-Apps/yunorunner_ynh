@@ -25,6 +25,8 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
+ci_package_check_path="${YNH_APP_ARG_CI_PACKAGE_CHECK_PATH:-/home/CI_package_check}"
+ci_package_check_datadir="${YNH_APP_ARG_CI_PACKAGE_CHECK_DATADIR:-/home/CI_package_check}"
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -46,6 +48,7 @@ ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=ci_package_check_datadir --value=$ci_package_check_datadir
 
 #=================================================
 # STANDARD MODIFICATIONS

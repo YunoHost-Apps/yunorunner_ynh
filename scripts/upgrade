@@ -20,6 +20,8 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 port=$(ynh_app_setting_get --app=$app --key=port)
+ci_package_check_path=$(ynh_app_setting_get --app=$app --key=ci_package_check_path)
+ci_package_check_datadir=$(ynh_app_setting_get --app=$app --key=ci_package_check_datadir)
 
 #=================================================
 # CHECK VERSION
@@ -76,6 +78,18 @@ ynh_script_progression --message="Ensuring downward compatibility..."
 if [ -z "$port" ]; then
 	port=4242
 	ynh_app_setting_set --app=$app --key=port --value=$port
+fi
+
+# If ci_package_check_path doesn't exist, create it
+if [ -z "$ci_package_check_path" ]; then
+	ci_package_check_path="/home/CI_package_check"
+	ynh_app_setting_set --app=$app --key=ci_package_check_path --value=$ci_package_check_path
+fi
+
+# If ci_package_check_datadir doesn't exist, create it
+if [ -z "$ci_package_check_datadir" ]; then
+	ci_package_check_datadir="/home/CI_package_check"
+	ynh_app_setting_set --app=$app --key=ci_package_check_datadir --value=$ci_package_check_datadir
 fi
 
 if [[ ! -d "$final_path/.git/" ]]

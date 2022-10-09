@@ -6,7 +6,7 @@
         "en": "CI runner of YunoHost",
         "fr": "Runner d'intégration continue de YunoHost"
     },
-    "version": "2022.01.18~ynh2",
+    "version": "2022.01.18~ynh3",
     "url": "https://github.com/YunoHost/yunorunner",
     "upstream": {
         "license": "GPL-3.0-or-later",
@@ -38,6 +38,26 @@
                 "type": "path",
                 "example": "/yunorunner",
                 "default": "/yunorunner"
+            },
+            {
+                "name": "ci_package_check_path",
+                "type": "string",
+                "optional": "True",
+                "example": "/home/CI_package_check",
+                "default": "/home/CI_package_check",
+                "ask": {
+                    "en": "Provide the CI_package_check path"
+                }
+            },
+            {
+                "name": "ci_package_check_datadir",
+                "type": "string",
+                "optional": "True",
+                "example": "/home/CI_package_check",
+                "default": "/home/CI_package_check",
+                "ask": {
+                    "en": "Provide the CI_package_check datadir"
+                }
             }
         ]
     }
