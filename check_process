@@ -13,9 +13,11 @@
 		setup_public=1
 		upgrade=1
 		# 2021-03-05~ynh1
-		upgrade=1	from_commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
+		upgrade=0	from_commit=f0e9373aa2403bf04f84c67646ac5d34376b7959
 		# 2021-09-22~ynh1
 		upgrade=1	from_commit=fea498cd83a7da12a102efe2f47397dace3cddda
+		# 2022.01.18~ynh2
+		upgrade=1	from_commit=e8797ff75f93947f09d877b5232609fdd8b72b09
 		backup_restore=1
 		multi_instance=1
 		port_already_use=1 (4242)
