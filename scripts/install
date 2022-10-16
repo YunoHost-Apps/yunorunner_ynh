@@ -83,11 +83,11 @@ ynh_script_progression --message="Setting up source files..."
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-git init "$final_path"
+ynh_exec_warn_less git init "$final_path"
 pushd "$final_path"
-	git remote add origin "$yunorunner_repository"
-	git fetch --quiet --depth=1 origin "$yunorunner_release"
-	git reset --quiet --hard FETCH_HEAD
+	ynh_exec_warn_less git remote add origin "$yunorunner_repository"
+	ynh_exec_warn_less git fetch --quiet --depth=1 origin "$yunorunner_release"
+	ynh_exec_warn_less git reset --quiet --hard FETCH_HEAD
 popd
 
 chmod 750 "$final_path"
@@ -110,9 +110,9 @@ ynh_add_nginx_config
 ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	python3 -m venv venv
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -r requirements-frozen.txt
+	ynh_exec_warn_less python3 -m venv venv
+	ynh_exec_warn_less venv/bin/pip install --upgrade pip
+	ynh_exec_warn_less venv/bin/pip install -r requirements-frozen.txt
 popd
 
 #=================================================

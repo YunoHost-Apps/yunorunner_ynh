@@ -88,9 +88,9 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Installing Python dependencies..."
 
 pushd $final_path
-	python3 -m venv venv
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -r requirements-frozen.txt
+	ynh_exec_warn_less python3 -m venv venv
+	ynh_exec_warn_less venv/bin/pip install --upgrade pip
+	ynh_exec_warn_less venv/bin/pip install -r requirements-frozen.txt
 popd
 
 #=================================================
