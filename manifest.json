@@ -42,7 +42,7 @@
             {
                 "name": "ci_package_check_path",
                 "type": "string",
-                "optional": "True",
+                "optional": true,
                 "example": "/home/CI_package_check",
                 "default": "/home/CI_package_check",
                 "ask": {
@@ -52,7 +52,7 @@
             {
                 "name": "ci_package_check_datadir",
                 "type": "string",
-                "optional": "True",
+                "optional": true,
                 "example": "/home/CI_package_check",
                 "default": "/home/CI_package_check",
                 "ask": {
