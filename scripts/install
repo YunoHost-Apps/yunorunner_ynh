@@ -48,6 +48,7 @@ ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=ci_package_check_path --value=$ci_package_check_path
 ynh_app_setting_set --app=$app --key=ci_package_check_datadir --value=$ci_package_check_datadir
 
 #=================================================
