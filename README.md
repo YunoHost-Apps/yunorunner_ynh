@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # YunoRunner for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![Working status](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)  
 [![Install YunoRunner with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -17,13 +17,11 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 CI runner of YunoHost
 
-**Shipped version:** 2022.01.18~ynh2
-
-
+**Shipped version:** 2023.01.10~ynh1
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot.png)
+![Screenshot of YunoRunner](./doc/screenshots/screenshot.png)
 
 ## Disclaimers / important information
 
@@ -34,19 +32,20 @@ CI runner of YunoHost
 
 ## Documentation and resources
 
-* Upstream app code repository: https://github.com/YunoHost/yunorunner
-* YunoHost documentation for this app: https://yunohost.org/app_yunorunner
-* Report a bug: https://github.com/YunoHost-Apps/yunorunner_ynh/issues
+* Upstream app code repository: <https://github.com/YunoHost/yunorunner>
+* YunoHost documentation for this app: <https://yunohost.org/app_yunorunner>
+* Report a bug: <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>
 
 ## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
-```
+
+``` bash
 sudo yunohost app install https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade yunorunner -u https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
 ```
 
-**More info regarding app packaging:** https://yunohost.org/packaging_apps
+**More info regarding app packaging:** <https://yunohost.org/packaging_apps>
