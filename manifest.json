@@ -36,8 +36,7 @@
             {
                 "name": "path",
                 "type": "path",
-                "example": "/yunorunner",
-                "default": "/yunorunner"
+                "default": "/ci"
             }
         ]
     }
