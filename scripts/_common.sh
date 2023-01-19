@@ -9,7 +9,7 @@ pkg_dependencies="python3-venv python3-dev python3-pip sqlite3 wkhtmltopdf optip
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
-yunorunner_release="c851f73ed0d24584588ee732ed1ebccd4866fad9"
+yunorunner_release="391720754114f5fef443785b221fb7444a457317"
 
 #=================================================
 # PERSONAL HELPERS
