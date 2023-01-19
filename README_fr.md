@@ -17,7 +17,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 
 Runner d'intégration continue de YunoHost
 
-**Version incluse :** 2022.01.18~ynh2
+**Version incluse :** 2023.01.19~ynh1
 
 ## Captures d’écran
 
