@@ -1,9 +1,10 @@
 BASE_URL = "https://__DOMAIN____PATH__"
 PORT = __PORT__
-DEBUG = False
-PATH_TO_ANALYZER = "/home/CI_package_check/analyseCI.sh"
+PATH_TO_ANALYZER = "__FINALPATH__/analyze_yunohost_app.sh"
 MONITOR_APPS_LIST = False
 MONITOR_GIT = False
 MONITOR_ONLY_GOOD_QUALITY_APPS = False
 MONTHLY_JOBS = False
 WORKER_COUNT = 1
+YNH_BRANCH = "stable"
+DIST = "bullseye"
