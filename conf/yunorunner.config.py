@@ -1,6 +1,6 @@
 BASE_URL = "https://__DOMAIN____PATH__"
 PORT = __PORT__
-PATH_TO_ANALYZER = "__FINALPATH__/analyze_yunohost_app.sh"
+PACKAGE_CHECK_DIR = "__FINALPATH__/package_check/"
 MONITOR_APPS_LIST = False
 MONITOR_GIT = False
 MONITOR_ONLY_GOOD_QUALITY_APPS = False
