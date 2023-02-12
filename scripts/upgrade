@@ -114,8 +114,8 @@ then
 
 	# Download, check integrity, uncompress and patch the source from app.src
 	pushd "$final_path"
-		git fetch --quiet --depth=1 origin "$yunorunner_release"
-		git reset --quiet --hard FETCH_HEAD
+		ynh_exec_as $app git fetch --quiet --depth=1 origin "$yunorunner_release"
+		ynh_exec_as $app git reset --quiet --hard FETCH_HEAD
 	popd
 fi
 
