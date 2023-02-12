@@ -5,7 +5,8 @@ It shall NOT be edited by hand.
 
 # YunoRunner for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![Working status](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![Working status](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+
 [![Install YunoRunner with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
 *[Lire ce readme en français.](./README_fr.md)*
