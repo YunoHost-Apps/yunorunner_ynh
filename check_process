@@ -4,6 +4,8 @@
 	; Manifest
 		domain="domain.tld"
 		path="/path"
+                mode="manual"
+                cluster="no"
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1
