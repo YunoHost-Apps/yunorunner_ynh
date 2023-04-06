@@ -37,6 +37,24 @@
                 "name": "path",
                 "type": "path",
                 "default": "/ci"
+            },
+            {
+                "name": "",
+                "type": "select",
+                "choices": ["auto", "manual"]
+                "default": "manual"
+                "ask": {
+                    "en": "Should the jobs be automatically run from the apps list?"
+                }
+            },
+            {
+                "name": "cluster",
+                "type": "select",
+                "choices": ["cluster", "no"]
+                "default": "no"
+                "ask": {
+                    "en": "Should an LXD cluster be created with this server as first node?"
+                }
             }
         ]
     }
