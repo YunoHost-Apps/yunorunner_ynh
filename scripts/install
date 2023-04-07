@@ -134,7 +134,7 @@ chown $app:$app "$final_path/config.py"
 ynh_script_progression --message="Run Yunorunner's finish_install script..."
 
 pushd "$final_path"
-    ./finish_install.sh $mode $cluster
+    ./maintenance/finish_install.sh $mode $cluster
 popd
 
 #=================================================
