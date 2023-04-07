@@ -157,7 +157,7 @@ popd
 ynh_script_progression --message="Run Yunorunner's finish_install script..."
 
 pushd "$final_path"
-    ./finish_install.sh
+    ./maintenance/finish_install.sh
 popd
 
 #=================================================
