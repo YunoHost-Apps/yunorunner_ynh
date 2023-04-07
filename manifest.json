@@ -39,7 +39,7 @@
                 "default": "/ci"
             },
             {
-                "name": "",
+                "name": "mode",
                 "type": "select",
                 "choices": ["auto", "manual"],
                 "default": "manual",
