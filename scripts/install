@@ -126,7 +126,7 @@ popd
 #=================================================
 ynh_script_progression --message="Adding a config file..."
 
-if $mode = "auto"; then
+if [ $mode = "auto" ]; then
 	auto = "True"
 else
 	auto = "False"
