@@ -1,9 +1,8 @@
 ;; Test complet
-	; pre-install
-		sudo git clone --quiet https://github.com/YunoHost/CI_package_check /home/CI_package_check
 	; Manifest
 		domain="domain.tld"
 		path="/path"
+		context="personal-ci"
                 mode="manual"
                 cluster="no"
 	; Checks

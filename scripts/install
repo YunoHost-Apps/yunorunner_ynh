@@ -25,6 +25,7 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
+context=$YNH_APP_ARG_CONTEXT
 mode=$YNH_APP_ARG_MODE
 cluster=$YNH_APP_ARG_CLUSTER
 
@@ -89,6 +90,8 @@ pushd "$final_path"
 	ynh_exec_as $app git remote add origin "$yunorunner_repository"
 	ynh_exec_as $app git fetch --quiet --depth=1 origin "$yunorunner_release"
 	ynh_exec_as $app git reset --quiet --hard FETCH_HEAD
+	setup_lxd
+	git clone https://github.com/YunoHost/package_check "./package_check"
 popd
 
 chmod 750 "$final_path"
@@ -123,6 +126,12 @@ popd
 #=================================================
 ynh_script_progression --message="Adding a config file..."
 
+if $mode = "auto"; then
+	auto = "True"
+else
+	auto = "False"
+fi
+
 ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
 
 chmod 400 "$final_path/config.py"
@@ -133,9 +142,11 @@ chown $app:$app "$final_path/config.py"
 #=================================================
 ynh_script_progression --message="Run Yunorunner's finish_install script..."
 
-pushd "$final_path"
-    ./finish_install.sh $mode $cluster
-popd
+if [ $context != "personal-ci" ] && [ ${PACKAGE_CHECK_EXEC:-0} -ne 0 ]; then
+	tweak_yunohost
+fi
+
+add_cron_jobs
 
 #=================================================
 # SETUP SYSTEMD

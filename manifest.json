@@ -39,7 +39,16 @@
                 "default": "/ci"
             },
             {
-                "name": "",
+                "name": "context",
+                "type": "select",
+                "choices": ["personal-ci", "official-infra"],
+                "default": "personal-ci",
+                "ask": {
+                    "en": "Leave it to 'personal-ci'. If set to 'official-infra', Yunorunner will take over your server and disable vital services to run alone."
+                }
+            },
+            {
+                "name": "mode",
                 "type": "select",
                 "choices": ["auto", "manual"],
                 "default": "manual",

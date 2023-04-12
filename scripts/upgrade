@@ -152,15 +152,6 @@ pushd $final_path
 popd
 
 #=================================================
-# FINISH INSTALL
-#=================================================
-ynh_script_progression --message="Run Yunorunner's finish_install script..."
-
-pushd "$final_path"
-    ./finish_install.sh
-popd
-
-#=================================================
 # UPDATE A CONFIG FILE
 #=================================================
 ynh_script_progression --message="Updating a config file..."

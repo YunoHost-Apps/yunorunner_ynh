@@ -15,6 +15,128 @@ yunorunner_release="52ef23a2cb37cb4fe13debca58eb589bb2f4d927"
 # PERSONAL HELPERS
 #=================================================
 
+function tweak_yunohost() {
+
+    # Idk why this is needed but wokay I guess >_>
+    echo -e "\n127.0.0.1 $domain	#CI_APP" >> /etc/hosts
+
+    ynh_print_info "Disabling unecessary services to save up RAM..."
+    for SERVICE in mysql php7.4-fpm metronome rspamd dovecot postfix redis-server postsrsd yunohost-api avahi-daemon
+    do
+        systemctl stop $SERVICE
+        systemctl disable $SERVICE --quiet
+    done
+
+    yunohost app makedefault -d "$domain" $app
+
+}
+
+function setup_lxd() {
+    if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null
+    then
+        ynh_script_progression --message="Installing LXD... (this make take a long time!"
+        yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+    fi
+
+    mkdir .lxd
+    pushd .lxd
+
+    ynh_print_info "Configuring lxd..."
+
+    if [ "$lxd_cluster" == "cluster" ]
+    then
+        local free_space=$(df --output=avail / | sed 1d)
+        local btrfs_size=$(( $free_space * 90 / 100 / 1024 / 1024 ))
+        local lxc_network=$((1 + $RANDOM % 254))
+
+        yunohost firewall allow TCP 8443
+        cat >./preseed.conf <<EOF
+config:
+  cluster.https_address: $domain:8443
+  core.https_address: ${domain}:8443
+  core.trust_password: ${yuno_pwd}
+networks:
+- config:
+    ipv4.address: 192.168.${lxc_network}.1/24
+    ipv4.nat: "true"
+    ipv6.address: none
+  description: ""
+  name: lxdbr0
+  type: bridge
+  project: default
+storage_pools:
+- config:
+    size: ${btrfs_size}GB
+    source: /var/lib/lxd/disks/local.img
+  description: ""
+  name: local
+  driver: btrfs
+profiles:
+- config: {}
+  description: Default LXD profile
+  devices:
+    lxdbr0:
+      nictype: bridged
+      parent: lxdbr0
+      type: nic
+    root:
+      path: /
+      pool: local
+      type: disk
+  name: default
+projects:
+- config:
+    features.images: "true"
+    features.networks: "true"
+    features.profiles: "true"
+    features.storage.volumes: "true"
+  description: Default LXD project
+  name: default
+cluster:
+  server_name: ${domain}
+  enabled: true
+EOF
+        cat ./preseed.conf | lxd init --preseed
+        rm ./preseed.conf
+        lxc config set core.https_address [::]
+    else
+        lxd init --auto --storage-backend=dir
+    fi
+
+    popd
+
+    # ci_user will be the one launching job, gives it permission to run lxd commands
+    usermod -a -G lxd $app
+
+    ynh_exec_as $app lxc remote add yunohost https://devbaseimgs.yunohost.org --public --accept-certificate
+}
+
+function add_cron_jobs() {
+    ynh_script_progression --message="Configuring the cron jobs.."
+
+    # Cron tasks
+    cat >>  "/etc/cron.d/yunorunner" << EOF
+# self-upgrade every night
+0 3 * * * root "$YUNORUNNER_HOME/maintenance/self_upgrade.sh" >> "$YUNORUNNER_HOME/maintenance/self_upgrade.log" 2>&1
+EOF
+}
+
+# =========================
+#  Main stuff
+# =========================
+
+# Add permission to the user for the entire yunorunner home because it'll be the one running the tests (as a non-root user)
+chown -R $ci_user $YUNORUNNER_HOME
+
+echo "Done!"
+echo " "
+echo "N.B. : If you want to enable Matrix notification, you should look at "
+echo "the instructions inside lib/chat_notify.sh to deploy matrix-commander"
+echo ""
+echo "You may also want to tweak the 'config' file to run test with a different branch / arch"
+echo ""
+echo "When you're ready to start the CI, run:    systemctl restart $ci_user"
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
