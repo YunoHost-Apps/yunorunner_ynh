@@ -127,9 +127,9 @@ popd
 ynh_script_progression --message="Adding a config file..."
 
 if [ $mode = "auto" ]; then
-	auto = "True"
+	auto="True"
 else
-	auto = "False"
+	auto="False"
 fi
 
 ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
