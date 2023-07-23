@@ -117,7 +117,7 @@ function add_cron_jobs() {
     # Cron tasks
     cat >>  "/etc/cron.d/yunorunner" << EOF
 # self-upgrade every night
-0 3 * * * root "$YUNORUNNER_HOME/maintenance/self_upgrade.sh" >> "$YUNORUNNER_HOME/maintenance/self_upgrade.log" 2>&1
+0 3 * * * root "$final_path/maintenance/self_upgrade.sh" >> "$final_path/maintenance/self_upgrade.log" 2>&1
 EOF
 }
 
