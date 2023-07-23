@@ -53,7 +53,7 @@
                 "choices": ["auto", "manual"],
                 "default": "manual",
                 "ask": {
-                    "en": "Should the jobs be automatically run from the apps list?"
+                    "en": "Should the jobs be automatically run from the apps list? In manual mode, Yunorunner will expect to be triggered by the `ciclic` command or webhooks (like ci-apps-dev). In auto mode, all apps of the catalog will be scheduled to be tested at least once a month and upon any change in their designated main branch (like ci-apps)."
                 }
             },
             {
@@ -62,7 +62,7 @@
                 "choices": ["cluster", "no"],
                 "default": "no",
                 "ask": {
-                    "en": "Should an LXD cluster be created with this server as first node?"
+                    "en": "Should an LXD cluster be created with this server as first node? (cluster mode is experimental)"
                 }
             }
         ]

@@ -121,22 +121,6 @@ function add_cron_jobs() {
 EOF
 }
 
-# =========================
-#  Main stuff
-# =========================
-
-# Add permission to the user for the entire yunorunner home because it'll be the one running the tests (as a non-root user)
-chown -R $ci_user $YUNORUNNER_HOME
-
-echo "Done!"
-echo " "
-echo "N.B. : If you want to enable Matrix notification, you should look at "
-echo "the instructions inside lib/chat_notify.sh to deploy matrix-commander"
-echo ""
-echo "You may also want to tweak the 'config' file to run test with a different branch / arch"
-echo ""
-echo "When you're ready to start the CI, run:    systemctl restart $ci_user"
-
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
