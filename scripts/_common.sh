@@ -100,7 +100,7 @@ EOF
         rm ./preseed.conf
         lxc config set core.https_address [::]
     else
-        lxd init --auto --storage-backend=dir
+        lxd init --auto #--storage-backend=dir
     fi
 
     popd
