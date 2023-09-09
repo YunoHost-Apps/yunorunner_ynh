@@ -6,7 +6,7 @@
         "en": "CI runner of YunoHost",
         "fr": "Runner d'intégration continue de YunoHost"
     },
-    "version": "2023.02.12~ynh1",
+    "version": "2023.04.05~ynh1",
     "url": "https://github.com/YunoHost/yunorunner",
     "upstream": {
         "license": "GPL-3.0-or-later",
@@ -37,6 +37,33 @@
                 "name": "path",
                 "type": "path",
                 "default": "/ci"
+            },
+            {
+                "name": "context",
+                "type": "select",
+                "choices": ["personal-ci", "official-infra"],
+                "default": "personal-ci",
+                "ask": {
+                    "en": "Leave it to 'personal-ci'. If set to 'official-infra', Yunorunner will take over your server and disable vital services to run alone."
+                }
+            },
+            {
+                "name": "mode",
+                "type": "select",
+                "choices": ["auto", "manual"],
+                "default": "manual",
+                "ask": {
+                    "en": "Should the jobs be automatically run from the apps list? In manual mode, Yunorunner will expect to be triggered by the `ciclic` command or webhooks (like ci-apps-dev). In auto mode, all apps of the catalog will be scheduled to be tested at least once a month and upon any change in their designated main branch (like ci-apps)."
+                }
+            },
+            {
+                "name": "cluster",
+                "type": "select",
+                "choices": ["cluster", "no"],
+                "default": "no",
+                "ask": {
+                    "en": "Should an LXD cluster be created with this server as first node? (cluster mode is experimental)"
+                }
             }
         ]
     }
