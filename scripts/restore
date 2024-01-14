@@ -131,6 +131,15 @@ ynh_script_progression --message="Reloading NGINX web server..."
 ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
+# ADD FIREWALL RULES
+#=================================================
+ynh_script_progression --message="Adding firewall rules..."
+
+mkdir -p "/etc/yunohost/hooks.d/post_iptable_rules"
+ynh_add_config --template="post_iptable_rules" --destination="/etc/yunohost/hooks.d/post_iptable_rules/50-${app}"
+yunohost firewall reload
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 

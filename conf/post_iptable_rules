@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+
+iptables -t filter -A INPUT -i lxdbr0 -p udp -d 255.255.255.255 --dport 67 -j ACCEPT

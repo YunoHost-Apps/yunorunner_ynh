@@ -86,6 +86,13 @@ ynh_script_progression --message="Removing the dedicated system user..."
 ynh_system_user_delete --username=$app
 
 #=================================================
+# REMOVE FIREWALL RULES
+#=================================================
+ynh_script_progression --message="Removing firewall rules..."
+
+yunohost firewall reload
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 
