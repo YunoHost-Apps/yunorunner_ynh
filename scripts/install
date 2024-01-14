@@ -87,6 +87,8 @@ yunohost service add "$app" --description="$app daemon for YunoRunner" $(exposed
 
 ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
+_ynh_firewall_add_tweak
+
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================

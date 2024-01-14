@@ -55,6 +55,19 @@ exposed_ports_if_cluster() {
     fi
 }
 
+_ynh_firewall_add_tweak() {
+    mkdir -p "/etc/yunohost/hooks.d/post_iptable_rules"
+
+    ynh_add_config --template="firewall_rules.sh" --destination="/etc/yunohost/hooks.d/post_iptable_rules/50-${app}"
+    yunohost firewall reload
+}
+
+_ynh_firewall_remove_tweak() {
+    ynh_secure_remove --file="/etc/yunohost/hooks.d/post_iptable_rules/50-${app}"
+    yunohost firewall git remote add origin git@github.com:user/repository.git
+
+}
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
