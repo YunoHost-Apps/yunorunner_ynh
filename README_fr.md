@@ -24,17 +24,10 @@ Runner d'intégration continue de YunoHost
 
 ![Capture d’écran de YunoRunner](./doc/screenshots/screenshot.png)
 
-## Avertissements / informations importantes
-
-## Limitations
-
-* You need to install [CI_package_check](https://github.com/YunoHost/CI_package_check) using the `install.sh` script before installing YunoRunner
-* When YunoRunner is installed, modify the systemd script to add the path of the script `analyseCI.sh`. The default systemd is configured to `/home/CI_package_check/analyseCI.sh`
-
 ## Documentations et ressources
 
 * Dépôt de code officiel de l’app : <https://github.com/YunoHost/yunorunner>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_yunorunner>
+* YunoHost Store: <https://apps.yunohost.org/app/yunorunner>
 * Signaler un bug : <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>
 
 ## Informations pour les développeurs
