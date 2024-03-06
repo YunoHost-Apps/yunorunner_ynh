@@ -7,7 +7,7 @@ name = "YunoRunner"
 description.en = "CI runner of YunoHost"
 description.fr = "Runner d'intégration continue de YunoHost"
 
-version = "2023.04.05~ynh2"
+version = "2023.04.05~ynh3"
 
 maintainers = []
 
@@ -52,7 +52,7 @@ ram.runtime = "50M"
     default = "manual"
 
     [install.cluster]
-    ask.en = "Should an LXD cluster be created with this server as first node? (cluster mode is experimental)"
+    ask.en = "Should an Incus cluster be created with this server as first node? (cluster mode is experimental)"
     type = "boolean"
     default = false
 

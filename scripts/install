@@ -8,13 +8,15 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# INSTALL LXD
+# INSTALL INCUS
 #=================================================
-ynh_script_progression --message="Installing LXD... (this make take a long time!)"
+ynh_script_progression --message="Installing Incus... (this make take a long time!)"
 
-if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
-    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "incus")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/incus_ynh
 fi
+
+setup_incus
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -29,8 +31,6 @@ ynh_exec_as "$app" git -C "$install_dir" reset --quiet --hard FETCH_HEAD
 ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
 
 chown "$app:$app" "$install_dir"
-
-setup_lxd
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"

@@ -6,7 +6,7 @@
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
-yunorunner_release="52ef23a2cb37cb4fe13debca58eb589bb2f4d927"
+yunorunner_release="a2ab9f576b2ab628190aa65d48dcdad727a81929"
 
 #=================================================
 # PERSONAL HELPERS
@@ -25,28 +25,28 @@ tweak_yunohost() {
     yunohost app makedefault -d "$domain" $app
 }
 
-setup_lxd() {
-    ynh_print_info "Configuring lxd..."
+setup_incus() {
+    ynh_print_info "Configuring Incus..."
+
+    # ci_user will be the one launching job, gives it permission to run incus commands
+    usermod -a -G incus-admin "$app"
 
     if [ "$cluster" -eq 1 ]; then
         yunohost firewall allow TCP 8443
 
         free_space=$(df --output=avail / | sed 1d)
         btrfs_size=$(( free_space * 90 / 100 / 1024 / 1024 ))
-        lxc_network=$((1 + RANDOM % 254))
-        ynh_add_config --template="lxd-preseed.yml" --destination="$install_dir/lxd-preseed.yml"
-        lxd init --preseed < "$install_dir/lxd-preseed.yml"
-        rm "$install_dir/lxd-preseed.yml"
+        incus_network=$((1 + RANDOM % 254))
+        ynh_add_config --template="incus-preseed.yml" --destination="$install_dir/incus-preseed.yml"
+        incus admin init --preseed < "$install_dir/incus-preseed.yml"
+        rm "$install_dir/incus-preseed.yml"
 
-        lxc config set core.https_address "[::]"
+        incus config set core.https_address "[::]"
     else
-        lxd init --auto # --storage-backend=dir
+        incus admin init --auto # --storage-backend=dir
     fi
 
-    # ci_user will be the one launching job, gives it permission to run lxd commands
-    usermod -a -G lxd "$app"
-
-    ynh_exec_as "$app" lxc remote add yunohost https://devbaseimgs.yunohost.org --public --accept-certificate
+    ynh_exec_as "$app" incus remote add yunohost https://devbaseimgs.yunohost.org --public --accept-certificate
 }
 
 exposed_ports_if_cluster() {

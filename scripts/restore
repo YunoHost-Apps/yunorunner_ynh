@@ -15,12 +15,12 @@ source /usr/share/yunohost/helpers
 ynh_maintenance_mode_ON
 
 #=================================================
-# INSTALL LXD
+# INSTALL INCUS
 #=================================================
-ynh_script_progression --message="Installing LXD... (this make take a long time!)"
+ynh_script_progression --message="Installing Incus... (this make take a long time!)"
 
-if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
-    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "incus")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/incus_ynh
 fi
 
 #=================================================
