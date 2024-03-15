@@ -22,7 +22,7 @@ fi
 ynh_script_progression --message="Setting up source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_exec_as "$app" git -C "$install_dir" init
+ynh_exec_as "$app" git -C "$install_dir" init -b main
 ynh_exec_as "$app" git -C "$install_dir" remote add origin "$yunorunner_repository"
 ynh_exec_as "$app" git -C "$install_dir" fetch --quiet --depth=1 origin "$yunorunner_release"
 ynh_exec_as "$app" git -C "$install_dir" reset --quiet --hard FETCH_HEAD

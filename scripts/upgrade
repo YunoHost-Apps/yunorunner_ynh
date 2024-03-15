@@ -35,7 +35,7 @@ ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --
 ynh_script_progression --message="Ensuring downward compatibility..."
 
 if [ ! -d "$install_dir/.git/" ]; then
-    ynh_exec_as "$app" git -C "$install_dir" init
+    ynh_exec_as "$app" git -C "$install_dir" init -b main
     git -C "$install_dir" remote add origin "$yunorunner_repository"
 fi
 
