@@ -64,7 +64,7 @@ fi
 
 if [[ -z "${backend:-}" ]]; then
     backend=lxd
-    ynh_app_setting_set --app="$app" --key="lxd" --value="$lxd"
+    ynh_app_setting_set --app="$app" --key="backend" --value="$backend"
 fi
 
 # Values now use underscore
