@@ -78,6 +78,10 @@ if [[ "$cluster" == "cluster" ]] || [[ "$cluster" == "no" ]]; then
     ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
 fi
 
+if [ ! -d "$install_dir/package_check" ]; then
+    ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
+fi
+
 # Remove Pythonz
 ynh_secure_remove --file="$install_dir/.pythonz"
 
