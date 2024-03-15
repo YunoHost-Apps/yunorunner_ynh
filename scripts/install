@@ -8,6 +8,15 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
+# INSTALL LXD
+#=================================================
+ynh_script_progression --message="Installing LXD... (this make take a long time!)"
+
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+fi
+
+#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..."

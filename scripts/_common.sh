@@ -26,11 +26,6 @@ tweak_yunohost() {
 }
 
 setup_lxd() {
-    if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
-        ynh_script_progression --message="Installing LXD... (this make take a long time!"
-        yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
-    fi
-
     ynh_print_info "Configuring lxd..."
 
     if [ "$cluster" -eq 1 ]; then

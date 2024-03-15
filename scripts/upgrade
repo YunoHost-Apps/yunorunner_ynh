@@ -14,6 +14,15 @@ source /usr/share/yunohost/helpers
 ynh_maintenance_mode_ON
 
 #=================================================
+# INSTALL LXD
+#=================================================
+ynh_script_progression --message="Installing LXD... (this make take a long time!)"
+
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+fi
+
+#=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Stopping $app's systemd service..."
