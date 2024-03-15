@@ -21,6 +21,7 @@ ynh_script_progression --message="Installing Incus... (this make take a long tim
 
 if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "incus")' >/dev/null; then
     yunohost app install --force https://github.com/YunoHost-Apps/incus_ynh
+    setup_incus
 fi
 
 #=================================================
