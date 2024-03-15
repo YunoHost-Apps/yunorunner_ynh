@@ -60,7 +60,7 @@ chown "$app:$app" "$install_dir/config.py"
 #=================================================
 ynh_script_progression --message="Run Yunorunner's finish_install script..."
 
-if [ $context != "personal-ci" ] && [ "${PACKAGE_CHECK_EXEC:-0}" -ne 0 ]; then
+if [ "$context" == "official_infra" ] && [ "${PACKAGE_CHECK_EXEC:-0}" -ne 0 ]; then
     tweak_yunohost
 fi
 

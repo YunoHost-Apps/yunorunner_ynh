@@ -35,6 +35,12 @@ if yunohost firewall list | grep -q "\- $port$"; then
     ynh_exec_warn_less yunohost firewall disallow TCP "$port"
 fi
 
+# Values now use underscore
+if echo "$context" | grep -- -; then
+    context=$(echo "$context" | tr - _)
+    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+fi
+
 # Remove Pythonz
 ynh_secure_remove --file="$install_dir/.pythonz"
 
