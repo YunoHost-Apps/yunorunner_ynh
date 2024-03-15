@@ -14,7 +14,6 @@ maintainers = []
 [upstream]
 license = "GPL-3.0-or-later"
 code = "https://github.com/YunoHost/yunorunner"
-website = "https://github.com/YunoHost/yunorunner"
 
 [integration]
 yunohost = ">= 11.2"

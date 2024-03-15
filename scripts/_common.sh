@@ -33,7 +33,7 @@ setup_lxd() {
 
     ynh_print_info "Configuring lxd..."
 
-    if [ "$cluster" == "cluster" ]; then
+    if [ "$cluster" -eq 1 ]; then
         setup_lxd
     else
         lxd init --auto # --storage-backend=dir
@@ -43,6 +43,12 @@ setup_lxd() {
     usermod -a -G lxd "$app"
 
     ynh_exec_as "$app" lxc remote add yunohost https://devbaseimgs.yunohost.org --public --accept-certificate
+}
+
+exposed_ports_if_cluster() {
+    if [ "$cluster" -eq 1 ]; then
+        echo "8443"
+    fi
 }
 
 setup_lxd_cluster() {
