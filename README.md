@@ -25,7 +25,6 @@ CI runner of YunoHost
 
 ## Documentation and resources
 
-- Official app website: <https://github.com/YunoHost/yunorunner>
 - Upstream app code repository: <https://github.com/YunoHost/yunorunner>
 - YunoHost Store: <https://apps.yunohost.org/app/yunorunner>
 - Report a bug: <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>

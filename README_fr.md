@@ -25,7 +25,6 @@ Runner d'intégration continue de YunoHost
 
 ## Documentations et ressources
 
-- Site officiel de l’app : <https://github.com/YunoHost/yunorunner>
 - Dépôt de code officiel de l’app : <https://github.com/YunoHost/yunorunner>
 - YunoHost Store : <https://apps.yunohost.org/app/yunorunner>
 - Signaler un bug : <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>
