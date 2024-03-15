@@ -1,0 +1,84 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "yunorunner"
+name = "YunoRunner"
+description.en = "CI runner of YunoHost"
+description.fr = "Runner d'intégration continue de YunoHost"
+
+version = "2023.04.05~ynh2"
+
+maintainers = []
+
+[upstream]
+license = "GPL-3.0-or-later"
+code = "https://github.com/YunoHost/yunorunner"
+
+[integration]
+yunohost = ">= 11.2"
+architectures = "all"
+multi_instance = true
+ldap = "not_relevant"
+sso = "not_relevant"
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    type = "domain"
+
+    [install.path]
+    type = "path"
+    default = "/ci"
+
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
+    [install.context]
+    ask.en = "Leave it to 'personal-ci'. If set to 'official-infra', Yunorunner will take over your server and disable vital services to run alone."
+    type = "select"
+    choices.personal_ci = "Personal CI"
+    choices.official_infra = "Official infra"
+    default = "personal_ci"
+
+    [install.mode]
+    ask.en = "Should the jobs be automatically run from the apps list? In manual mode, Yunorunner will expect to be triggered by the `ciclic` command or webhooks (like ci-apps-dev). In auto mode, all apps of the catalog will be scheduled to be tested at least once a month and upon any change in their designated main branch (like ci-apps)."
+    type = "select"
+    choices.auto = "Automatically from the catalog"
+    choices.manual = "Manually via ciclic or webhook"
+    default = "manual"
+
+    [install.cluster]
+    ask.en = "Should an LXD cluster be created with this server as first node? (cluster mode is experimental)"
+    type = "boolean"
+    default = false
+
+    [install.backend]
+    ask.en = "Should you use LXD or Incus (LXD support will be removed soon)"
+    type = "select"
+    choices = ["lxd"]
+    default = "lxd"
+
+[resources]
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.ports]
+    main.default = 8095
+
+    [resources.apt]
+    packages = [
+        "python3-venv",
+        "python3-dev",
+        "python3-pip",
+        "sqlite3",
+        "wkhtmltopdf",
+        "optipng",
+    ]

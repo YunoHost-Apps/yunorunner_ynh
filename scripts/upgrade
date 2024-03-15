@@ -1,56 +1,11 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
 source _common.sh
 source /usr/share/yunohost/helpers
-
-#=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..."
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-port=$(ynh_app_setting_get --app=$app --key=port)
-
-#=================================================
-# CHECK VERSION
-#=================================================
-ynh_script_progression --message="Checking version..."
-
-upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# CLOSE A PORT
-#=================================================
-
-if yunohost firewall list | grep -q "\- $port$"
-then
-	ynh_script_progression --message="Closing port $port"
-	ynh_exec_warn_less yunohost firewall disallow TCP $port
-fi
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
 
 #=================================================
 # ACTIVATE MAINTENANCE MODE
@@ -59,96 +14,101 @@ ynh_abort_if_errors
 ynh_maintenance_mode_ON
 
 #=================================================
-# STANDARD UPGRADE STEPS
+# INSTALL LXD
+#=================================================
+ynh_script_progression --message="Installing LXD... (this make take a long time!)"
+
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+fi
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..."
+ynh_script_progression --message="Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped YunoRunner CI"
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped YunoRunner CI"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..."
 
-# If port doesn't exist, create it
-if [ -z "$port" ]; then
-	port=4242
-	ynh_app_setting_set --app=$app --key=port --value=$port
+if [ ! -d "$install_dir/.git/" ]; then
+    ynh_exec_as "$app" git -C "$install_dir" init -b main
+    git -C "$install_dir" remote add origin "$yunorunner_repository"
 fi
 
-if [[ ! -d "$final_path/.git/" ]]
-then
-	git init "$final_path"
-	pushd "$final_path"
-		git remote add origin "$yunorunner_repository"
-	popd
+# Close a legacy port
+if yunohost firewall list | grep -q "\- $port$"; then
+    ynh_exec_warn_less yunohost firewall disallow TCP "$port"
 fi
 
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
+if [[ -z "${context:-}" ]]; then
+    if grep -q "CI_APP" /etc/hosts; then
+        context=official_infra
+    else
+        context=personal_ci
+    fi
+    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+fi
 
-	ynh_app_setting_delete --app=$app --key=is_public
+if [[ -z "${cluster:-}" ]]; then
+    if lxc cluster list >/dev/null 2>&1; then
+        cluster=1
+    else
+        cluster=0
+    fi
+    ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
+fi
+
+if [[ -z "${backend:-}" ]]; then
+    backend=lxd
+    ynh_app_setting_set --app="$app" --key="backend" --value="$backend"
+fi
+
+# Values now use underscore
+if echo "$context" | grep -- -; then
+    context=$(echo "$context" | tr - _)
+    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+fi
+
+# cluster is now a boolean
+if [[ "$cluster" == "cluster" ]] || [[ "$cluster" == "no" ]]; then
+    if [[ "$cluster" == "cluster" ]]; then
+        cluster=1
+    else
+        cluster=0
+    fi
+    ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
 fi
 
 # Remove Pythonz
-ynh_secure_remove --file="$final_path/.pythonz"
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..."
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir=$final_path
+ynh_secure_remove --file="$install_dir/.pythonz"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression --message="Upgrading source files..."
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading source files..."
+# Download, check integrity, uncompress and patch the source from app.src
+pushd "$install_dir"
+    ynh_exec_as "$app" git fetch --quiet --depth=1 origin "$yunorunner_release"
+    ynh_exec_as "$app" git reset --quiet --hard FETCH_HEAD
+popd
 
-	# Download, check integrity, uncompress and patch the source from app.src
-	pushd "$final_path"
-		ynh_exec_as $app git fetch --quiet --depth=1 origin "$yunorunner_release"
-		ynh_exec_as $app git reset --quiet --hard FETCH_HEAD
-	popd
-fi
+chmod -R o-rwx "$install_dir"
+chown -R "$app:$app" "$install_dir"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:$app "$final_path"
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..."
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..."
-
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# SPECIFIC UPGRADE
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing Python dependencies..."
 
-pushd $final_path
-	python3 -m venv venv
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -r requirements-frozen.txt
+pushd "$install_dir"
+    python3 -m venv venv
+    venv/bin/pip install --upgrade pip
+    venv/bin/pip install -r requirements-frozen.txt
 popd
 
 #=================================================
@@ -156,47 +116,37 @@ popd
 #=================================================
 ynh_script_progression --message="Updating a config file..."
 
-ynh_backup_if_checksum_is_different --file="$final_path/config.py"
+ynh_backup_if_checksum_is_different --file="$install_dir/config.py"
 
-chmod 400 "$final_path/config.py"
-chown $app:$app "$final_path/config.py"
+chmod 400 "$install_dir/config.py"
+chown "$app:$app" "$install_dir/config.py"
 
 #=================================================
-# SETUP SYSTEMD
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading systemd configuration..."
+ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
+yunohost service add "$app" --description="$app daemon for YunoRunner" $(exposed_ports_if_cluster)
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."
-
-yunohost service add $app --description="$app daemon for YunoRunner"
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..."
+ynh_script_progression --message="Starting $app's systemd service..."
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
 #=================================================
 
 ynh_maintenance_mode_OFF
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
-
-ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT

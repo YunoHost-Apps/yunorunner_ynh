@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 BASE_URL = "https://__DOMAIN____PATH__"
 PORT = __PORT__
-PACKAGE_CHECK_DIR = "__FINALPATH__/package_check/"
+PACKAGE_CHECK_DIR = "__INSTALL_DIR__/package_check/"
 MONITOR_APPS_LIST = __AUTO__
 MONITOR_GIT = __AUTO__
 MONITOR_ONLY_GOOD_QUALITY_APPS = False
