@@ -18,9 +18,9 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 
 Yunorunner is a CI server for YunoHost apps.
 
-It is based on LXD/LXC and uses [package_check](https://github.com/YunoHost/package_check).
+It is based on Incus / LXC and uses [package_check](https://github.com/YunoHost/package_check).
 
-**Version incluse :** 2023.04.05~ynh2
+**Version incluse :** 2023.04.05~ynh3
 
 ## Captures d’écran
 
