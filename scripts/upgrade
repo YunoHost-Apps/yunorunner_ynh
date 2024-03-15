@@ -44,6 +44,24 @@ if yunohost firewall list | grep -q "\- $port$"; then
     ynh_exec_warn_less yunohost firewall disallow TCP "$port"
 fi
 
+if [[ -z "$context" ]]; then
+    if grep -q "CI_APP" /etc/hosts; then
+        context=official_infra
+    else
+        context=personal_ci
+    fi
+    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+fi
+
+if [[ -z "$cluster" ]]; then
+    if incus cluster list >/dev/null 2>&1; then
+        cluster=1
+    else
+        cluster=0
+    fi
+    ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
+fi
+
 # Values now use underscore
 if echo "$context" | grep -- -; then
     context=$(echo "$context" | tr - _)
