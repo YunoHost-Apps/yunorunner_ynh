@@ -1,0 +1,44 @@
+config:
+  cluster.https_address: __DOMAIN__:8443
+  core.https_address: __DOMAIN__:8443
+  core.trust_password: __YUNO_PWD__
+networks:
+- config:
+    ipv4.address: 192.168.__LXC_NETWORK__.1/24
+    ipv4.nat: "true"
+    ipv6.address: none
+  description: ""
+  name: lxdbr0
+  type: bridge
+  project: default
+storage_pools:
+- config:
+    size: __BTRFS_SIZE__GB
+    source: /var/lib/lxd/disks/local.img
+  description: ""
+  name: local
+  driver: btrfs
+profiles:
+- config: {}
+  description: Default LXD profile
+  devices:
+    lxdbr0:
+      nictype: bridged
+      parent: lxdbr0
+      type: nic
+    root:
+      path: /
+      pool: local
+      type: disk
+  name: default
+projects:
+- config:
+    features.images: "true"
+    features.networks: "true"
+    features.profiles: "true"
+    features.storage.volumes: "true"
+  description: Default LXD project
+  name: default
+cluster:
+  server_name: __DOMAIN__
+  enabled: true

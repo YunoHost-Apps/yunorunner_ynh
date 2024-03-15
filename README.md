@@ -16,9 +16,11 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ## Overview
 
-CI runner of YunoHost
+Yunorunner is a CI server for YunoHost apps.
 
-**Shipped version:** 2023.04.05~ynh1
+It is based on LXD/LXC and uses [package_check](https://github.com/YunoHost/package_check).
+
+**Shipped version:** 2023.04.05~ynh2
 
 ## Screenshots
 
@@ -26,9 +28,9 @@ CI runner of YunoHost
 
 ## Documentation and resources
 
-* Upstream app code repository: <https://github.com/YunoHost/yunorunner>
-* YunoHost Store: <https://apps.yunohost.org/app/yunorunner>
-* Report a bug: <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>
+- Upstream app code repository: <https://github.com/YunoHost/yunorunner>
+- YunoHost Store: <https://apps.yunohost.org/app/yunorunner>
+- Report a bug: <https://github.com/YunoHost-Apps/yunorunner_ynh/issues>
 
 ## Developer info
 
@@ -36,7 +38,7 @@ Please send your pull request to the [testing branch](https://github.com/YunoHos
 
 To try the testing branch, please proceed like that.
 
-``` bash
+```bash
 sudo yunohost app install https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade yunorunner -u https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing --debug
