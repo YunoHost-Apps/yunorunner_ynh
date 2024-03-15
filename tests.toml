@@ -1,0 +1,16 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/tests.v1.schema.json
+
+test_format = 1.0
+
+[default]
+
+    args.context = "personal-ci"
+    args.mode = "manual"
+    args.cluster = false
+
+    # ------------
+    # Tests to run
+    # ------------
+
+    test_upgrade_from.f0e9373aa2403bf04f84c67646ac5d34376b7959.name = "2021-03-05~ynh1"
+    test_upgrade_from.fea498cd83a7da12a102efe2f47397dace3cddda.name = "2021-09-22~ynh1"
