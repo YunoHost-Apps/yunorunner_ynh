@@ -83,7 +83,7 @@ ynh_add_nginx_config
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
-yunohost service add "$app" --description="$app daemon for YunoRunner" --needs_exposed_ports="$(exposed_ports_if_cluster)"
+yunohost service add "$app" --description="$app daemon for YunoRunner" "$(exposed_ports_if_cluster)"
 
 ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 

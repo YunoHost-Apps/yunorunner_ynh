@@ -42,7 +42,7 @@ setup_lxd() {
 
 exposed_ports_if_cluster() {
     if [ "$cluster" -eq 1 ]; then
-        echo "8443"
+        echo "--needs_exposed_ports=8443"
     fi
 }
 
