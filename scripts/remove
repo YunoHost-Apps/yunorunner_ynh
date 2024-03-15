@@ -23,6 +23,8 @@ ynh_remove_systemd_config
 # Remove the dedicated NGINX config
 ynh_remove_nginx_config
 
+_ynh_firewall_remove_tweak
+
 #=================================================
 # END OF SCRIPT
 #=================================================
