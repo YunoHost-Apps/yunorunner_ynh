@@ -75,4 +75,5 @@ ram.runtime = "50M"
         "sqlite3",
         "wkhtmltopdf",
         "optipng",
+        "lynx",
     ]
