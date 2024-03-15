@@ -29,7 +29,16 @@ setup_lxd() {
     ynh_print_info "Configuring lxd..."
 
     if [ "$cluster" -eq 1 ]; then
-        setup_lxd
+        yunohost firewall allow TCP 8443
+
+        free_space=$(df --output=avail / | sed 1d)
+        btrfs_size=$(( free_space * 90 / 100 / 1024 / 1024 ))
+        lxc_network=$((1 + RANDOM % 254))
+        ynh_add_config --template="lxd-preseed.yml" --destination="$install_dir/lxd-preseed.yml"
+        lxd init --preseed < "$install_dir/lxd-preseed.yml"
+        rm "$install_dir/lxd-preseed.yml"
+
+        lxc config set core.https_address "[::]"
     else
         lxd init --auto # --storage-backend=dir
     fi
@@ -44,66 +53,6 @@ exposed_ports_if_cluster() {
     if [ "$cluster" -eq 1 ]; then
         echo "--needs_exposed_ports=8443"
     fi
-}
-
-setup_lxd_cluster() {
-    local free_space=$(df --output=avail / | sed 1d)
-    local btrfs_size=$(( free_space * 90 / 100 / 1024 / 1024 ))
-    local lxc_network=$((1 + RANDOM % 254))
-
-    yunohost firewall allow TCP 8443
-
-    tmpfile=$(mktemp --suffix=.preseed.yml)
-    cat >"$tmpfile" <<EOF
-config:
-  cluster.https_address: $domain:8443
-  core.https_address: ${domain}:8443
-  core.trust_password: ${yuno_pwd}
-networks:
-- config:
-    ipv4.address: 192.168.${lxc_network}.1/24
-    ipv4.nat: "true"
-    ipv6.address: none
-  description: ""
-  name: lxdbr0
-  type: bridge
-  project: default
-storage_pools:
-- config:
-    size: ${btrfs_size}GB
-    source: /var/lib/lxd/disks/local.img
-  description: ""
-  name: local
-  driver: btrfs
-profiles:
-- config: {}
-  description: Default LXD profile
-  devices:
-    lxdbr0:
-      nictype: bridged
-      parent: lxdbr0
-      type: nic
-    root:
-      path: /
-      pool: local
-      type: disk
-  name: default
-projects:
-- config:
-    features.images: "true"
-    features.networks: "true"
-    features.profiles: "true"
-    features.storage.volumes: "true"
-  description: Default LXD project
-  name: default
-cluster:
-  server_name: ${domain}
-  enabled: true
-EOF
-    lxd init --preseed < "$tmpfile"
-    rm "$tmpfile"
-
-    lxc config set core.https_address "[::]"
 }
 
 #=================================================
