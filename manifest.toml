@@ -59,8 +59,8 @@ ram.runtime = "50M"
     [install.backend]
     ask.en = "Should you use LXD or Incus (LXD support will be removed soon)"
     type = "select"
-    choices = ["lxd", "incus"]
-    default = "incus"
+    choices = ["lxd"]
+    default = "lxd"
 
 [resources]
     [resources.system_user]
