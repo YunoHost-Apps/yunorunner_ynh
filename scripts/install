@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -10,115 +8,44 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
+# INSTALL LXD
 #=================================================
+ynh_script_progression --message="Installing LXD... (this make take a long time!)"
 
-ynh_clean_setup () {
-	true
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
-context=$YNH_APP_ARG_CONTEXT
-mode=$YNH_APP_ARG_MODE
-cluster=$YNH_APP_ARG_CLUSTER
-
-app=$YNH_APP_INSTANCE_NAME
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-ynh_script_progression --message="Validating installation parameters..."
-
-final_path=/var/www/$app
-test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
-
-# Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression --message="Storing installation settings..."
-
-ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=path --value=$path_url
-
-#=================================================
-# STANDARD MODIFICATIONS
-#=================================================
-# FIND AND OPEN A PORT
-#=================================================
-ynh_script_progression --message="Finding an available port..."
-
-# Find an available port
-port=$(ynh_find_port --port=8095)
-ynh_app_setting_set --app=$app --key=port --value=$port
-
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."
-
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..."
-
-# Create a system user
-ynh_system_user_create --username=$app --home_dir=$final_path
+if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
+    yunohost app install --force https://github.com/YunoHost-Apps/lxd_ynh
+fi
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..."
 
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-mkdir "$final_path"
-chown $app:$app "$final_path"
-pushd "$final_path"
-        ynh_exec_as $app git init
-	ynh_exec_as $app git remote add origin "$yunorunner_repository"
-	ynh_exec_as $app git fetch --quiet --depth=1 origin "$yunorunner_release"
-	ynh_exec_as $app git reset --quiet --hard FETCH_HEAD
-	setup_lxd
-	git clone https://github.com/YunoHost/package_check "./package_check"
-popd
+ynh_exec_as "$app" git -C "$install_dir" init -b main
+ynh_exec_as "$app" git -C "$install_dir" remote add origin "$yunorunner_repository"
+ynh_exec_as "$app" git -C "$install_dir" fetch --quiet --depth=1 origin "$yunorunner_release"
+ynh_exec_as "$app" git -C "$install_dir" reset --quiet --hard FETCH_HEAD
+ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app "$final_path"
-chown $app:www-data "$final_path"
-chown -R $app:www-data "$final_path/results"
+chown "$app:$app" "$install_dir"
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring NGINX web server..."
+setup_lxd
 
-# Create a dedicated NGINX config
-ynh_add_nginx_config
+chmod -R o-rwx "$install_dir"
+chown -R "$app:$app" "$install_dir"
+chown "$app:www-data" "$install_dir"
+chown -R "$app:www-data" "$install_dir/results"
 
-#=================================================
-# SPECIFIC SETUP
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing Python dependencies..."
 
-pushd $final_path
-	python3 -m venv venv
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -r requirements-frozen.txt
+pushd "$install_dir"
+    python3 -m venv venv
+    venv/bin/pip install --upgrade pip
+    venv/bin/pip install -r requirements-frozen.txt
 popd
 
 #=================================================
@@ -127,66 +54,46 @@ popd
 ynh_script_progression --message="Adding a config file..."
 
 if [ $mode = "auto" ]; then
-	auto="True"
+    auto="True"
 else
-	auto="False"
+    auto="False"
 fi
 
-ynh_add_config --template="yunorunner.config.py" --destination="$final_path/config.py"
+ynh_add_config --template="yunorunner.config.py" --destination="$install_dir/config.py"
 
-chmod 400 "$final_path/config.py"
-chown $app:$app "$final_path/config.py"
+chmod 400 "$install_dir/config.py"
+chown "$app:$app" "$install_dir/config.py"
 
 #=================================================
 # FINISH INSTALL
 #=================================================
 ynh_script_progression --message="Run Yunorunner's finish_install script..."
 
-if [ $context != "personal-ci" ] && [ ${PACKAGE_CHECK_EXEC:-0} -ne 0 ]; then
-	tweak_yunohost
+if [ "$context" == "official_infra" ] && [ "${PACKAGE_CHECK_EXEC:-0}" -ne 0 ]; then
+    tweak_yunohost
 fi
 
-add_cron_jobs
+#=================================================
+# SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
 
-#=================================================
-# SETUP SYSTEMD
-#=================================================
-ynh_script_progression --message="Configuring a systemd service..."
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
+yunohost service add "$app" --description="$app daemon for YunoRunner" $(exposed_ports_if_cluster)
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."
-
-yunohost service add $app --description="$app daemon for YunoRunner"
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..."
+ynh_script_progression --message="Starting $app's systemd service..."
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Configuring permissions..."
-
-# Make app public
-ynh_permission_update --permission="main" --add="visitors"
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
-
-ynh_systemd_action --service_name=nginx --action=reload
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
 
 #=================================================
 # ADD FIREWALL RULES
