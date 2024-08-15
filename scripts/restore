@@ -38,6 +38,9 @@ chown -R "$app:$app" "$install_dir"
 chown "$app:www-data" "$install_dir" "$install_dir/yunorunner"
 chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
+# Allow system user to execute ciclic
+chmod ug+x "$install_dir/ciclic"
+
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
 #=================================================
