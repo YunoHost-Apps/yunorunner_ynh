@@ -3,9 +3,9 @@
 请勿手动编辑。
 -->
 
-# YunoHost 的 YunoRunner
+# YunoHost 上的 YunoRunner
 
-[![集成程度](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![工作状态](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
 
 [![使用 YunoHost 安装 YunoRunner](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
