@@ -35,7 +35,7 @@ It is based on Incus / LXC and uses [package_check](https://github.com/YunoHost/
 
 ## Información para desarrolladores
 
-Por favor enviar sus correcciones a la [`branch testing`](https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing
+Por favor enviar sus correcciones a la [rama `testing`](https://github.com/YunoHost-Apps/yunorunner_ynh/tree/testing).
 
 Para probar la rama `testing`, sigue asÍ:
 
