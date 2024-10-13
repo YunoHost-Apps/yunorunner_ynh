@@ -5,7 +5,7 @@ NON debe editarse manualmente.
 
 # YunoRunner para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
 
 [![Instalar YunoRunner con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
@@ -21,7 +21,7 @@ Yunorunner is a CI server for YunoHost apps.
 It is based on Incus / LXC and uses [package_check](https://github.com/YunoHost/package_check).
 
 
-**Versión proporcionada:** 2023.04.05~ynh3
+**Versión proporcionada:** 2023.04.05~ynh4
 
 ## Capturas de pantalla
 
