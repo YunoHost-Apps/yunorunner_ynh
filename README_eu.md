@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # YunoRunner YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/yunorunner.svg)](https://dash.yunohost.org/appci/app/yunorunner) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
 
 [![Instalatu YunoRunner YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
