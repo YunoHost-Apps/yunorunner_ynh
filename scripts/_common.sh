@@ -46,7 +46,7 @@ setup_incus() {
         incus admin init --auto # --storage-backend=dir
     fi
 
-    ynh_exec_as "$app" incus remote add yunohost https://devbaseimgs.yunohost.org --public --accept-certificate
+    ynh_exec_as "$app"  incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
 }
 
 exposed_ports_if_cluster() {
