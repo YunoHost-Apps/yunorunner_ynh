@@ -121,7 +121,7 @@ ynh_script_progression --message="Installing Python dependencies..."
 pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r requirements-frozen.txt
+    venv/bin/pip install -r requirements.txt
 popd
 
 #=================================================
