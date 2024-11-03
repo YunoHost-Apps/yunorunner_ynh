@@ -21,11 +21,11 @@ _git_clone_or_pull() {
     fi
 
     if [ -d "$repo_dir" ]; then
-        ynh_exec_as_app git -C "$repo_dir" fetch --quiet
+        ynh_exec_as "$app" git -C "$repo_dir" fetch --quiet
     else
-        ynh_exec_as_app git clone "$repo_url" "$repo_dir" --quiet
+        ynh_exec_as "$app" git clone "$repo_url" "$repo_dir" --quiet
     fi
-    ynh_exec_as_app git -C "$repo_dir" pull --quiet
+    ynh_exec_as "$app" git -C "$repo_dir" pull --quiet
 }
 
 tweak_yunohost() {
