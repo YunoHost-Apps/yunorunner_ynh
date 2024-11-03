@@ -12,6 +12,25 @@ yunorunner_release="a2ab9f576b2ab628190aa65d48dcdad727a81929"
 # PERSONAL HELPERS
 #=================================================
 
+_git_clone_or_pull() {
+    repo_dir="$1"
+    repo_url="${2:-}"
+
+    if [[ -z "$repo_url" ]]; then
+        repo_url=$(ynh_read_manifest "upstream.code")
+    fi
+
+    if [ -d "$repo_dir" ]; then
+        # ynh_exec_as_app
+        git -C "$repo_dir" fetch --quiet
+    else
+        # ynh_exec_as_app
+        git clone "$repo_url" "$repo_dir" --quiet
+    fi
+    # ynh_exec_as_app
+    git -C "$repo_dir" pull --quiet
+}
+
 tweak_yunohost() {
     # Idk why this is needed but wokay I guess >_>
     echo -e "\n127.0.0.1 $domain	#CI_APP" >> /etc/hosts

@@ -23,12 +23,8 @@ setup_incus
 #=================================================
 ynh_script_progression --message="Setting up source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_exec_as "$app" git -C "$install_dir" init -b main
-ynh_exec_as "$app" git -C "$install_dir" remote add origin "$yunorunner_repository"
-ynh_exec_as "$app" git -C "$install_dir" fetch --quiet --depth=1 origin "$yunorunner_release"
-ynh_exec_as "$app" git -C "$install_dir" reset --quiet --hard FETCH_HEAD
-ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
+_git_clone_or_pull "$install_dir"
+_git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chown "$app:$app" "$install_dir"
 

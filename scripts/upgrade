@@ -102,11 +102,8 @@ fi
 #=================================================
 ynh_script_progression --message="Upgrading source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
-pushd "$install_dir"
-    ynh_exec_as "$app" git fetch --quiet --depth=1 origin "$yunorunner_release"
-    ynh_exec_as "$app" git reset --quiet --hard FETCH_HEAD
-popd
+_git_clone_or_pull "$install_dir"
+_git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
