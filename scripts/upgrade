@@ -119,6 +119,8 @@ pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
     venv/bin/pip install -r requirements.txt
+    # package_check dep not in apt
+    venv/bin/pip install imgkit
 popd
 
 #=================================================
