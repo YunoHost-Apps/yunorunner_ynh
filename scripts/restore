@@ -67,7 +67,7 @@ yunohost firewall reload
 #=================================================
 ynh_script_progression --message="Reloading NGINX web server and $app's service..." --weight=1
 
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=30
 
 ynh_systemd_action --service_name=nginx --action=reload
 
