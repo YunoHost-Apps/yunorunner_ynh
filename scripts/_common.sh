@@ -17,7 +17,7 @@ _git_clone_or_pull() {
     repo_url="${2:-}"
 
     if [[ -z "$repo_url" ]]; then
-        repo_url=$(ynh_read_manifest "upstream.code")
+        repo_url=$(ynh_read_manifest --manifest_key="upstream.code")
     fi
 
     if [ -d "$repo_dir" ]; then
