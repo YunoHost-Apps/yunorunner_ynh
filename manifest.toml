@@ -76,4 +76,10 @@ ram.runtime = "50M"
         "wkhtmltopdf",
         "optipng",
         "lynx",
+
+        # package checker deps
+        "python3-six",
+        "python3-jsonschema",
+        "python3-pyparsing",
+        "python3-toml",
     ]
