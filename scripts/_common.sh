@@ -20,7 +20,7 @@ _git_clone_or_pull() {
         repo_url=$(ynh_read_manifest --manifest_key="upstream.code")
     fi
 
-    if [ -d "$repo_dir" ]; then
+    if [ -d "$repo_dir/.git" ]; then
         ynh_exec_as "$app" git -C "$repo_dir" fetch --quiet
     else
         ynh_exec_as "$app" git clone "$repo_url" "$repo_dir" --quiet
