@@ -20,7 +20,7 @@ _git_clone_or_pull() {
         repo_url=$(ynh_read_manifest --manifest_key="upstream.code")
     fi
 
-    if [ -d "$repo_dir/.git" ]; then
+    if [ -d "$repo_dir" ]; then
         ynh_exec_as "$app" git -C "$repo_dir" fetch --quiet
     else
         ynh_exec_as "$app" git clone "$repo_url" "$repo_dir" --quiet
@@ -38,7 +38,7 @@ tweak_yunohost() {
         systemctl disable $SERVICE --quiet
     done
 
-    yunohost app makedefault -d "$domain" $app
+    yunohost app makedefault -d "$domain" "$app"
 }
 
 setup_incus() {

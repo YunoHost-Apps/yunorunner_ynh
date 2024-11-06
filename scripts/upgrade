@@ -25,9 +25,9 @@ ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd"
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..."
 
-if [ ! -d "$install_dir/.git/" ]; then
-    ynh_exec_as "$app" git -C "$install_dir" init -b main
-    git -C "$install_dir" remote add origin "$yunorunner_repository"
+if [ ! -d "$install_dir/yunorunner/" ]; then
+    mkdir -p "$install_dir/yunorunner/"
+    mv .git maintenance results static templates .gitignore ciclic models README.md requirements.txt requirements-frozen.txt run.py schedule.py "$install_dir/yunorunner/"
 fi
 
 # Close a legacy port
@@ -102,13 +102,13 @@ fi
 #=================================================
 ynh_script_progression --message="Upgrading source files..."
 
-_git_clone_or_pull "$install_dir"
+_git_clone_or_pull "$install_dir/yunorunner"
 _git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 chown "$app:www-data" "$install_dir"
-chown -R "$app:www-data" "$install_dir/results"
+chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
@@ -118,7 +118,7 @@ ynh_script_progression --message="Installing Python dependencies..."
 pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r requirements.txt
+    venv/bin/pip install -r yunorunner/requirements.txt
     # package_check dep not in apt
     venv/bin/pip install imgkit
 popd
@@ -128,10 +128,10 @@ popd
 #=================================================
 ynh_script_progression --message="Updating a config file..."
 
-ynh_backup_if_checksum_is_different --file="$install_dir/config.py"
+ynh_backup_if_checksum_is_different --file="$install_dir/yunorunner/config.py"
 
-chmod 400 "$install_dir/config.py"
-chown "$app:$app" "$install_dir/config.py"
+chmod 400 "$install_dir/yunorunner/config.py"
+chown "$app:$app" "$install_dir/yunorunner/config.py"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS

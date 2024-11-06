@@ -23,7 +23,7 @@ setup_incus
 #=================================================
 ynh_script_progression --message="Setting up source files..."
 
-_git_clone_or_pull "$install_dir"
+_git_clone_or_pull "$install_dir/yunorunner"
 _git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chown "$app:$app" "$install_dir"
@@ -31,7 +31,7 @@ chown "$app:$app" "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 chown "$app:www-data" "$install_dir"
-chown -R "$app:www-data" "$install_dir/results"
+chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
@@ -41,7 +41,7 @@ ynh_script_progression --message="Installing Python dependencies..."
 pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r requirements.txt
+    venv/bin/pip install -r yunorunner/requirements.txt
     # package_check dep not in apt
     venv/bin/pip install imgkit
 popd
@@ -57,10 +57,10 @@ else
     auto="False"
 fi
 
-ynh_add_config --template="yunorunner.config.py" --destination="$install_dir/config.py"
+ynh_add_config --template="yunorunner.config.py" --destination="$install_dir/yunorunner/config.py"
 
-chmod 400 "$install_dir/config.py"
-chown "$app:$app" "$install_dir/config.py"
+chmod 400 "$install_dir/yunorunner/config.py"
+chown "$app:$app" "$install_dir/yunorunner/config.py"
 
 #=================================================
 # FINISH INSTALL
