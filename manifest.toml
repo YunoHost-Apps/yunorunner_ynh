@@ -51,11 +51,6 @@ ram.runtime = "50M"
     choices.manual = "Manually via ciclic or webhook"
     default = "manual"
 
-    [install.cluster]
-    ask.en = "Should an Incus cluster be created with this server as first node? (cluster mode is experimental)"
-    type = "boolean"
-    default = false
-
 [resources]
     [resources.system_user]
 
