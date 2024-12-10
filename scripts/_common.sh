@@ -45,7 +45,7 @@ setup_incus() {
     # ci_user will be the one launching job, gives it permission to run incus commands
     usermod -a -G incus-admin "$app"
 
-    ynh_exec_as "$app"  incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
+    ynh_exec_as "$app" incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
 }
 
 #=================================================

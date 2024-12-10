@@ -97,6 +97,9 @@ if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id ==
     setup_incus
 fi
 
+# Always do it on upgrade, just in case
+usermod -a -G incus-admin "$app"
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
