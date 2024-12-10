@@ -5,7 +5,9 @@ Ini TIDAK boleh diedit dengan tangan.
 
 # YunoRunner untuk YunoHost
 
-[![Tingkat integrasi](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![Status kerja](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Status pemeliharaan](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![Tingkat integrasi](https://apps.yunohost.org/badge/integration/yunorunner)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
+![Status kerja](https://apps.yunohost.org/badge/state/yunorunner)
+![Status pemeliharaan](https://apps.yunohost.org/badge/maintained/yunorunner)
 
 [![Pasang YunoRunner dengan YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 

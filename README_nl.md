@@ -5,7 +5,9 @@ Hij mag NIET handmatig aangepast worden.
 
 # YunoRunner voor Yunohost
 
-[![Integratieniveau](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![Mate van functioneren](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Onderhoudsstatus](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![Integratieniveau](https://apps.yunohost.org/badge/integration/yunorunner)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
+![Mate van functioneren](https://apps.yunohost.org/badge/state/yunorunner)
+![Onderhoudsstatus](https://apps.yunohost.org/badge/maintained/yunorunner)
 
 [![YunoRunner met Yunohost installeren](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 

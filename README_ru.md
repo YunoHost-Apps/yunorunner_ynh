@@ -5,7 +5,9 @@
 
 # YunoRunner для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/yunorunner.svg)](https://ci-apps.yunohost.org/ci/apps/yunorunner/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/yunorunner.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/yunorunner.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/yunorunner)](https://ci-apps.yunohost.org/ci/apps/yunorunner/)
+![Состояние работы](https://apps.yunohost.org/badge/state/yunorunner)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/yunorunner)
 
 [![Установите YunoRunner с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=yunorunner)
 
