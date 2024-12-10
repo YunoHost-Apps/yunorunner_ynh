@@ -23,7 +23,7 @@ Yunorunner is a CI server for YunoHost apps.
 It is based on Incus / LXC and uses [package_check](https://github.com/YunoHost/package_check).
 
 
-**Version incluse :** 2023.04.05~ynh5
+**Version incluse :** 2024.12.10~ynh1
 
 ## Captures d’écran
 
