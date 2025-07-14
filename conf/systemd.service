@@ -13,8 +13,10 @@ Environment=YNHDEV_BACKEND=incus
 
 # Sandboxing options to harden security
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
-DevicePolicy=closed
-ProtectSystem=full
+
+# for some reason one of these is fucking up using matrix-commander ...
+# DevicePolicy=closed
+# ProtectSystem=full
 ProtectControlGroups=yes
 
 # Denying access to capabilities that should not be relevant for webapps
