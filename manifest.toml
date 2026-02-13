@@ -7,7 +7,7 @@ name = "YunoRunner"
 description.en = "CI runner of YunoHost"
 description.fr = "Runner d'intégration continue de YunoHost"
 
-version = "2023.04.05~ynh4"
+version = "2024.12.10~ynh1"
 
 maintainers = []
 
@@ -51,11 +51,6 @@ ram.runtime = "50M"
     choices.manual = "Manually via ciclic or webhook"
     default = "manual"
 
-    [install.cluster]
-    ask.en = "Should an Incus cluster be created with this server as first node? (cluster mode is experimental)"
-    type = "boolean"
-    default = false
-
 [resources]
     [resources.system_user]
 
@@ -76,4 +71,10 @@ ram.runtime = "50M"
         "wkhtmltopdf",
         "optipng",
         "lynx",
+
+        # package checker deps
+        "python3-six",
+        "python3-jsonschema",
+        "python3-pyparsing",
+        "python3-toml",
     ]

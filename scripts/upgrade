@@ -18,16 +18,16 @@ ynh_maintenance_mode_ON
 #=================================================
 ynh_script_progression --message="Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped YunoRunner CI"
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..."
 
-if [ ! -d "$install_dir/.git/" ]; then
-    ynh_exec_as "$app" git -C "$install_dir" init -b main
-    git -C "$install_dir" remote add origin "$yunorunner_repository"
+if [ ! -d "$install_dir/yunorunner/" ]; then
+    mkdir -p "$install_dir/yunorunner/"
+    mv .git maintenance results static templates .gitignore ciclic models README.md requirements.txt requirements-frozen.txt run.py schedule.py "$install_dir/yunorunner/"
 fi
 
 # Close a legacy port
@@ -97,21 +97,21 @@ if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id ==
     setup_incus
 fi
 
+# Always do it on upgrade, just in case
+usermod -a -G incus-admin "$app"
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Upgrading source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
-pushd "$install_dir"
-    ynh_exec_as "$app" git fetch --quiet --depth=1 origin "$yunorunner_release"
-    ynh_exec_as "$app" git reset --quiet --hard FETCH_HEAD
-popd
+_git_clone_or_pull "$install_dir/yunorunner"
+_git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
-chown "$app:www-data" "$install_dir"
-chown -R "$app:www-data" "$install_dir/results"
+chown "$app:www-data" "$install_dir" "$install_dir/yunorunner"
+chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 # Allow system user to execute ciclic
 chmod ug+x "$install_dir/ciclic"
@@ -124,7 +124,9 @@ ynh_script_progression --message="Installing Python dependencies..."
 pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r requirements-frozen.txt
+    venv/bin/pip install -r yunorunner/requirements.txt
+    # package_check dep not in apt
+    venv/bin/pip install imgkit
 popd
 
 #=================================================
@@ -132,10 +134,10 @@ popd
 #=================================================
 ynh_script_progression --message="Updating a config file..."
 
-ynh_backup_if_checksum_is_different --file="$install_dir/config.py"
+ynh_backup_if_checksum_is_different --file="$install_dir/yunorunner/config.py"
 
-chmod 400 "$install_dir/config.py"
-chown "$app:$app" "$install_dir/config.py"
+chmod 400 "$install_dir/yunorunner/config.py"
+chown "$app:$app" "$install_dir/yunorunner/config.py"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
@@ -147,7 +149,7 @@ ynh_add_nginx_config
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
-yunohost service add "$app" --description="$app daemon for YunoRunner" $(exposed_ports_if_cluster)
+yunohost service add "$app" --description="$app daemon for YunoRunner"
 
 ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
@@ -156,7 +158,7 @@ ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 #=================================================
 ynh_script_progression --message="Starting $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=30
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE

@@ -23,19 +23,15 @@ setup_incus
 #=================================================
 ynh_script_progression --message="Setting up source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_exec_as "$app" git -C "$install_dir" init -b main
-ynh_exec_as "$app" git -C "$install_dir" remote add origin "$yunorunner_repository"
-ynh_exec_as "$app" git -C "$install_dir" fetch --quiet --depth=1 origin "$yunorunner_release"
-ynh_exec_as "$app" git -C "$install_dir" reset --quiet --hard FETCH_HEAD
-ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
+_git_clone_or_pull "$install_dir/yunorunner"
+_git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chown "$app:$app" "$install_dir"
 
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
-chown "$app:www-data" "$install_dir"
-chown -R "$app:www-data" "$install_dir/results"
+chown "$app:www-data" "$install_dir" "$install_dir/yunorunner"
+chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 # Allow system user to execute ciclic
 chmod ug+x "$install_dir/ciclic"
@@ -48,7 +44,9 @@ ynh_script_progression --message="Installing Python dependencies..."
 pushd "$install_dir"
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r requirements-frozen.txt
+    venv/bin/pip install -r yunorunner/requirements.txt
+    # package_check dep not in apt
+    venv/bin/pip install imgkit
 popd
 
 #=================================================
@@ -62,10 +60,10 @@ else
     auto="False"
 fi
 
-ynh_add_config --template="yunorunner.config.py" --destination="$install_dir/config.py"
+ynh_add_config --template="yunorunner.config.py" --destination="$install_dir/yunorunner/config.py"
 
-chmod 400 "$install_dir/config.py"
-chown "$app:$app" "$install_dir/config.py"
+chmod 400 "$install_dir/yunorunner/config.py"
+chown "$app:$app" "$install_dir/yunorunner/config.py"
 
 #=================================================
 # FINISH INSTALL
@@ -86,7 +84,7 @@ ynh_add_nginx_config
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
-yunohost service add "$app" --description="$app daemon for YunoRunner" $(exposed_ports_if_cluster)
+yunohost service add "$app" --description="$app daemon for YunoRunner"
 
 ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
@@ -96,7 +94,7 @@ ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 ynh_script_progression --message="Starting $app's systemd service..."
 
 # Start a systemd service
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started YunoRunner CI" --timeout=30
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=30
 
 #=================================================
 # END OF SCRIPT

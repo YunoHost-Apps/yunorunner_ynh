@@ -12,6 +12,22 @@ yunorunner_release="a2ab9f576b2ab628190aa65d48dcdad727a81929"
 # PERSONAL HELPERS
 #=================================================
 
+_git_clone_or_pull() {
+    repo_dir="$1"
+    repo_url="${2:-}"
+
+    if [[ -z "$repo_url" ]]; then
+        repo_url=$(ynh_read_manifest --manifest_key="upstream.code")
+    fi
+
+    if [ -d "$repo_dir" ]; then
+        ynh_exec_as "$app" git -C "$repo_dir" fetch --quiet
+    else
+        ynh_exec_as "$app" git clone "$repo_url" "$repo_dir" --quiet
+    fi
+    ynh_exec_as "$app" git -C "$repo_dir" pull --quiet
+}
+
 tweak_yunohost() {
     # Idk why this is needed but wokay I guess >_>
     echo -e "\n127.0.0.1 $domain	#CI_APP" >> /etc/hosts
@@ -22,37 +38,14 @@ tweak_yunohost() {
         systemctl disable $SERVICE --quiet
     done
 
-    yunohost app makedefault -d "$domain" $app
+    yunohost app makedefault -d "$domain" "$app"
 }
 
 setup_incus() {
-    ynh_print_info "Configuring Incus..."
-
     # ci_user will be the one launching job, gives it permission to run incus commands
     usermod -a -G incus-admin "$app"
 
-    if [ "$cluster" -eq 1 ]; then
-        yunohost firewall allow TCP 8443
-
-        free_space=$(df --output=avail / | sed 1d)
-        btrfs_size=$(( free_space * 90 / 100 / 1024 / 1024 ))
-        incus_network=$((1 + RANDOM % 254))
-        ynh_add_config --template="incus-preseed.yml" --destination="$install_dir/incus-preseed.yml"
-        incus admin init --preseed < "$install_dir/incus-preseed.yml"
-        rm "$install_dir/incus-preseed.yml"
-
-        incus config set core.https_address "[::]"
-    else
-        incus admin init --auto # --storage-backend=dir
-    fi
-
-    ynh_exec_as "$app"  incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
-}
-
-exposed_ports_if_cluster() {
-    if [ "$cluster" -eq 1 ]; then
-        echo "--needs_exposed_ports=8443"
-    fi
+    ynh_exec_as "$app" incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
 }
 
 #=================================================

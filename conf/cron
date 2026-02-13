@@ -1,2 +1,2 @@
 # self-upgrade every night
-0 3 * * * root "__INSTALL_DIR__/maintenance/self_upgrade.sh" >> "__INSTALL_DIR__/maintenance/self_upgrade.log" 2>&1
+0 3 * * * root "__INSTALL_DIR__/yunorunner/maintenance/self_upgrade.sh" >> "__INSTALL_DIR__/yunorunner/maintenance/self_upgrade.log" 2>&1
