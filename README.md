@@ -19,7 +19,7 @@ CI runner of YunoHost
 
 
 ## Screenshots
-![Screenshot of YunoRunner](./doc/screenshots/screenshot.png)
+![Screenshot of YunoRunner](./doc/screenshots/yunorunner.png)
 
 ## 📦 Developer info
 
