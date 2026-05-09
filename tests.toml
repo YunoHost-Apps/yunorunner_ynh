@@ -12,4 +12,4 @@ test_format = 1.0
     # Tests to run
     # ------------
 
-    test_upgrade_from.fea498cd83a7da12a102efe2f47397dace3cddda.name = "2021-09-22~ynh1"
+    test_upgrade_from.f11627e98c6cdb77f5e9d00c4ca221b32b6b6908.name = "2024.12.10~ynh1"

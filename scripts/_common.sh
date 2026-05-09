@@ -1,31 +1,27 @@
 #!/bin/bash
 
 #=================================================
-# COMMON VARIABLES
+# COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
 yunorunner_repository="https://github.com/YunoHost/yunorunner"
 
-yunorunner_release="a2ab9f576b2ab628190aa65d48dcdad727a81929"
-
-#=================================================
-# PERSONAL HELPERS
-#=================================================
+yunorunner_release="1d062f3ec84324e33ef415c2086440acc296df67"
 
 _git_clone_or_pull() {
     repo_dir="$1"
     repo_url="${2:-}"
 
     if [[ -z "$repo_url" ]]; then
-        repo_url=$(ynh_read_manifest --manifest_key="upstream.code")
+        repo_url=$(ynh_read_manifest)
     fi
 
     if [ -d "$repo_dir" ]; then
-        ynh_exec_as "$app" git -C "$repo_dir" fetch --quiet
+        ynh_exec_as_app git -C "$repo_dir" fetch --quiet
     else
-        ynh_exec_as "$app" git clone "$repo_url" "$repo_dir" --quiet
+        ynh_exec_as_app git clone "$repo_url" "$repo_dir" --quiet
     fi
-    ynh_exec_as "$app" git -C "$repo_dir" pull --quiet
+    ynh_exec_as_app git -C "$repo_dir" pull --quiet
 }
 
 tweak_yunohost() {
@@ -45,16 +41,8 @@ setup_incus() {
     # ci_user will be the one launching job, gives it permission to run incus commands
     usermod -a -G incus-admin "$app"
 
-    ynh_exec_as "$app" incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
+    ynh_exec_as_app incus remote add yunohost https://repo.yunohost.org/incus --protocol simplestreams --public
 }
-
-#=================================================
-# EXPERIMENTAL HELPERS
-#=================================================
-
-#=================================================
-# FUTURE OFFICIAL HELPERS
-#=================================================
 
 ynh_maintenance_mode_ON () {
     # Create an html to serve as maintenance notice
@@ -112,8 +100,8 @@ ynh_maintenance_mode_OFF () {
     sleep 4
 
     # Then remove the temporary files used for the maintenance.
-    rm "/var/www/html/maintenance.$app.html"
-    rm "/etc/nginx/conf.d/$domain.d/maintenance.$app.conf"
+    ynh_safe_rm "/var/www/html/maintenance.$app.html"
+    ynh_safe_rm "/etc/nginx/conf.d/$domain.d/maintenance.$app.conf"
 
     systemctl reload nginx
 }
