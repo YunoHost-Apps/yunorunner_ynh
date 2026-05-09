@@ -1,3 +1,6 @@
 *.swp
 *~
 Notes
+'*~' 
+'*.sw[op]' 
+'.DS_Store' 

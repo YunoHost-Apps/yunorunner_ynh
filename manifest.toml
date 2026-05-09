@@ -7,7 +7,7 @@ name = "YunoRunner"
 description.en = "CI runner of YunoHost"
 description.fr = "Runner d'intégration continue de YunoHost"
 
-version = "2024.12.10~ynh2"
+version = "2026.05.09~ynh1"
 
 maintainers = []
 
@@ -16,7 +16,8 @@ license = "GPL-3.0-or-later"
 code = "https://github.com/YunoHost/yunorunner"
 
 [integration]
-yunohost = ">= 11.2"
+yunohost = ">= 12.1.39"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 ldap = "not_relevant"
@@ -55,6 +56,7 @@ ram.runtime = "50M"
     [resources.system_user]
 
     [resources.install_dir]
+    group = "www-data:r-x"
 
     [resources.permissions]
     main.url = "/"
@@ -67,8 +69,8 @@ ram.runtime = "50M"
         "python3-venv",
         "python3-dev",
         "python3-pip",
+        "python3-pycurl",
         "sqlite3",
-        "wkhtmltopdf",
         "optipng",
         "lynx",
 
@@ -78,3 +80,8 @@ ram.runtime = "50M"
         "python3-pyparsing",
         "python3-toml",
     ]
+    packages_from_raw_bash = """
+    if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
+        echo "wkhtmltopdf";
+    fi
+    """
