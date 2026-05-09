@@ -9,4 +9,4 @@ MONITOR_ONLY_GOOD_QUALITY_APPS = False
 MONTHLY_JOBS = __AUTO__
 WORKER_COUNT = 1
 YNH_BRANCH = "stable"
-DIST = "bullseye"
+DIST = "bookworm"
