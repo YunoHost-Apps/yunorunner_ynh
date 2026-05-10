@@ -120,11 +120,15 @@ chmod ug+x "$install_dir/yunorunner/ciclic"
 ynh_script_progression "Installing Python dependencies..."
 
 pushd "$install_dir"
-    python3 -m venv venv
-    venv/bin/pip install --upgrade pip
-    venv/bin/pip install -r yunorunner/requirements.txt
+    ynh_safe_rm "$install_dir/venv"
+    
+    ynh_exec_as_app python3 -m venv "$install_dir/venv"
+    ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install --upgrade pip
+    ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install -r yunorunner/requirements.txt
     # package_check dep not in apt
-    venv/bin/pip install imgkit
+    ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install imgkit
+
+    ynh_safe_rm "$install_dir/.cache/pip"
 popd
 
 #=================================================
