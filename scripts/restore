@@ -63,7 +63,10 @@ ynh_restore "/etc/systemd/system/$app.service"
 systemctl enable "$app.service" --quiet
 yunohost service add "$app" --description="$app daemon for YunoRunner"
 
-ynh_restore "/etc/cron.d/$app"
+ynh_restore "/etc/systemd/system/$app-self-upgrade.service"
+ynh_restore "/etc/systemd/system/$app-self-upgrade.timer"
+systemctl enable "$app-self-upgrade.timer" --quiet
+systemctl start "$app-self-upgrade.timer"
 
 #=================================================
 # RELOAD NGINX AND PHP-FPM OR THE APP SERVICE

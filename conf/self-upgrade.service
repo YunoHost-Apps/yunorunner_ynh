@@ -1,0 +1,15 @@
+[Unit]
+Description=Upgrade __APP__
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=__INSTALL_DIR__/
+ExecStart=__INSTALL_DIR__/yunorunner/maintenance/self_upgrade.sh
+StandardOutput=append:__INSTALL_DIR__/yunorunner/maintenance/self_upgrade.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
