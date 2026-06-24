@@ -1,0 +1,8 @@
+[Unit]
+Description=Upgrade __APP__ regularly
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target
