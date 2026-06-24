@@ -16,14 +16,14 @@ ynh_maintenance_mode_ON
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping $app's systemd service..."
+ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd"
+ynh_systemctl --service="$app" --action="stop" --log_path="systemd"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..."
+ynh_script_progression "Ensuring downward compatibility..."
 
 if [ ! -d "$install_dir/yunorunner/" ]; then
     mkdir -p "$install_dir/yunorunner/"
@@ -32,7 +32,7 @@ fi
 
 # Close a legacy port
 if yunohost firewall list | grep -q "\- $port$"; then
-    ynh_exec_warn_less yunohost firewall disallow TCP "$port"
+    ynh_hide_warnings yunohost firewall disallow TCP "$port"
 fi
 
 if [[ -z "${context:-}" ]]; then
@@ -41,7 +41,7 @@ if [[ -z "${context:-}" ]]; then
     else
         context=personal_ci
     fi
-    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+    ynh_app_setting_set --key="context" --value="$context"
 fi
 
 if [[ -z "${cluster:-}" ]]; then
@@ -50,13 +50,13 @@ if [[ -z "${cluster:-}" ]]; then
     else
         cluster=0
     fi
-    ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
+    ynh_app_setting_set --key="cluster" --value="$cluster"
 fi
 
 # Values now use underscore
 if echo "$context" | grep -- -; then
     context=$(echo "$context" | tr - _)
-    ynh_app_setting_set --app="$app" --key="context" --value="$context"
+    ynh_app_setting_set --key="context" --value="$context"
 fi
 
 # cluster is now a boolean
@@ -66,19 +66,19 @@ if [[ "$cluster" == "cluster" ]] || [[ "$cluster" == "no" ]]; then
     else
         cluster=0
     fi
-    ynh_app_setting_set --app="$app" --key="cluster" --value="$cluster"
+    ynh_app_setting_set --key="cluster" --value="$cluster"
 fi
 
 if [ ! -d "$install_dir/package_check" ]; then
-    ynh_exec_as "$app" git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
+    ynh_exec_as_app git clone https://github.com/YunoHost/package_check "$install_dir/package_check"
 fi
 
 # Remove Pythonz
-ynh_secure_remove --file="$install_dir/.pythonz"
+ynh_safe_rm "$install_dir/.pythonz"
 
 # This was moved to incus package
 if [ -f "/etc/yunohost/hooks.d/post_iptable_rules/50-${app}" ]; then
-    ynh_secure_remove --file="/etc/yunohost/hooks.d/post_iptable_rules/50-${app}"
+    ynh_safe_rm "/etc/yunohost/hooks.d/post_iptable_rules/50-${app}"
 fi
 
 #=================================================
@@ -86,11 +86,11 @@ fi
 #=================================================
 if yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "lxd")' >/dev/null; then
     # Remove lxd_ynh
-    ynh_script_progression --message="Removing LXD.."
+    ynh_script_progression "Removing LXD.."
     yunohost app remove lxd
 fi
 
-ynh_script_progression --message="Installing Incus... (this make take a long time!)"
+ynh_script_progression "Installing Incus... (this make take a long time!)"
 
 if ! yunohost app list --output-as json --quiet | jq -e '.apps[] | select(.id == "incus")' >/dev/null; then
     yunohost app install --force https://github.com/YunoHost-Apps/incus_ynh
@@ -103,20 +103,18 @@ usermod -a -G incus-admin "$app"
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Upgrading source files..."
+ynh_script_progression "Upgrading source files..."
 
 _git_clone_or_pull "$install_dir/yunorunner"
 _git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
-chmod -R o-rwx "$install_dir"
-chown -R "$app:$app" "$install_dir"
 chown "$app:www-data" "$install_dir" "$install_dir/yunorunner"
 chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing Python dependencies..."
+ynh_script_progression "Installing Python dependencies..."
 
 pushd "$install_dir"
     python3 -m venv venv
@@ -129,33 +127,31 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a config file..."
+ynh_script_progression "Updating a config file..."
 
-ynh_backup_if_checksum_is_different --file="$install_dir/yunorunner/config.py"
+ynh_backup_if_checksum_is_different "$install_dir/yunorunner/config.py"
 
-chmod 400 "$install_dir/yunorunner/config.py"
-chown "$app:$app" "$install_dir/yunorunner/config.py"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 # Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_config_add_systemd
 yunohost service add "$app" --description="$app daemon for YunoRunner"
 
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting $app's systemd service..."
+ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=30
+ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=30
 
 #=================================================
 # DEACTIVE MAINTENANCE MODE
@@ -167,4 +163,4 @@ ynh_maintenance_mode_OFF
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed"
+ynh_script_progression "Upgrade of $app completed"
