@@ -124,7 +124,7 @@ pushd "$install_dir"
 
     ynh_exec_as_app python3 -m venv "$install_dir/venv"
     ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install --upgrade pip
-    ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install -r yunorunner/requirements.txt
+    ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install -e ./yunorunner
     # package_check dep not in apt
     ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/pip" install imgkit
 
