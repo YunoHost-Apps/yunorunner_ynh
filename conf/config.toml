@@ -1,0 +1,29 @@
+[server]
+base_url = "https://__DOMAIN____PATH__"
+port = __PORT__
+
+[service]
+debug = false
+package_check_path = "__INSTALL_DIR__/package_check/"
+results_path = "__INSTALL_DIR__/yunorunner/results"
+
+[scheduling]
+monitor_apps_list = __AUTO__
+monitor_git = __AUTO__
+monthly_jobs = __AUTO__
+monitor_only_good_quality_apps = false
+answer_to_auto_updater = true
+
+[tests]
+arch = "amd64"
+dist = "bookworm"
+ynh_branch = "stable"
+
+[workers]
+number = 1
+timeout = 10800
+
+[webhooks]
+
+github_commit_status_token = ""
+github_webhook_secret = ""

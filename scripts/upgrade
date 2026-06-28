@@ -136,7 +136,7 @@ popd
 #=================================================
 ynh_script_progression "Updating a config file..."
 
-ynh_backup_if_checksum_is_different "$install_dir/yunorunner/config.py"
+ynh_backup_if_checksum_is_different "$install_dir/yunorunner/config.toml"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
