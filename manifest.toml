@@ -7,7 +7,7 @@ name = "YunoRunner"
 description.en = "CI runner of YunoHost"
 description.fr = "Runner d'intégration continue de YunoHost"
 
-version = "2026.06.24~ynh1"
+version = "2026.06.24~ynh2"
 
 maintainers = []
 
