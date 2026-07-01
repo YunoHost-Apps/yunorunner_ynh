@@ -5,7 +5,7 @@ port = __PORT__
 [service]
 debug = false
 package_check_path = "__INSTALL_DIR__/package_check/"
-results_path = "__INSTALL_DIR__/yunorunner/results"
+storage_path = "__DATA_DIR__"
 
 [scheduling]
 monitor_apps_list = __AUTO__

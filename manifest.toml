@@ -7,7 +7,7 @@ name = "YunoRunner"
 description.en = "CI runner of YunoHost"
 description.fr = "Runner d'intégration continue de YunoHost"
 
-version = "2026.06.24~ynh2"
+version = "2026.07.01~ynh1"
 
 maintainers = []
 
@@ -56,6 +56,9 @@ ram.runtime = "50M"
     [resources.system_user]
 
     [resources.install_dir]
+    group = "www-data:r-x"
+
+    [resources.data_dir]
     group = "www-data:r-x"
 
     [resources.permissions]
