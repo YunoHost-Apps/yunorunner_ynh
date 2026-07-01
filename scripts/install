@@ -27,10 +27,13 @@ _git_clone_or_pull "$install_dir/yunorunner"
 _git_clone_or_pull "$install_dir/package_check" https://github.com/YunoHost/package_check
 
 chown "$app:www-data" "$install_dir" "$install_dir/yunorunner"
-chown -R "$app:www-data" "$install_dir/yunorunner/results"
 
 # Allow system user to execute ciclic
 chmod ug+x "$install_dir/yunorunner/ciclic"
+
+# Create data directories
+mkdir -p "$data_dir/results/"{job_logs,logs,summary}
+chown -R "$app:www-data" "$data_dir/results"
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
@@ -93,6 +96,9 @@ ynh_script_progression "Starting $app's systemd service..."
 
 # Start a systemd service
 ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=30
+
+# Ensure db is not readable by www-data
+chmod g-r "$data_dir/db.sqlite"
 
 #=================================================
 # END OF SCRIPT
